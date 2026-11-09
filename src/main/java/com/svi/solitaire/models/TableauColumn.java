@@ -1,18 +1,15 @@
 package com.svi.solitaire.models;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.Stack;
+import java.util.*;
 
 public class TableauColumn {
-    Stack<Card> cardStack;
+    Deque<Card> cardStack;
 
     public TableauColumn(){
-        cardStack = new Stack<>();
+        cardStack = new ArrayDeque<>();
     }
 
-    public TableauColumn(Stack<Card> cards) {
+    public TableauColumn(Deque<Card> cards) {
         cardStack = cards;
     }
 
@@ -24,16 +21,25 @@ public class TableauColumn {
         return cardStack.size();
     }
 
-    public void moveCards(Stack<Card> movingCard) {
+    public void addCards(Deque<Card> movingCard) {
         for (Card card : movingCard) {
             cardStack.push(card);
         }
     }
 
-    public Card getCardAt(int index){
-        return cardStack.get(index);
-    }
+    public Card getCardAt(int index) {
+        if (index < 0 || index >= cardStack.size()) {
+            throw new IndexOutOfBoundsException("Invalid card index: " + index);
+        }
 
+        Iterator<Card> iterator = cardStack.iterator();
+
+        for (int i = 0; i < index; i++) {
+            iterator.next();
+        }
+
+        return iterator.next();
+    }
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();

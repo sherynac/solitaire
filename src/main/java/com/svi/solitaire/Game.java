@@ -36,10 +36,19 @@ public class Game {
             talon.drawCards();
             displayCurrentState();
             talon.drawCards();
-            foundations.get(0).addToFoundation(new Card(Suit.D, Rank.SIX));
+
+            addToFoundation(talon.drawWaste());
+
+            displayCurrentState();
+            System.out.println("DRAWN: " + talon.drawWaste());
 
             displayCurrentState();
 
+//            talon.returnToStock();
+//            displayCurrentState();
+
+            addToFoundation(talon.drawWaste());
+            displayCurrentState();
 
 //        }
     }
@@ -101,7 +110,7 @@ public class Game {
     }
 
     public void displayCurrentState(){
-        System.out.println(ColorHelper.color("====================== Move #: ==========================", "BLUE"));
+        System.out.println(ColorHelper.color("\n====================== Move #: ==========================", "BLUE"));
 
         System.out.printf("%n%-13s", "Stock");
         System.out.printf("%-20s", "Waste");
@@ -128,6 +137,13 @@ public class Game {
      * TODO: FOLLOWING METHODS MOVE TO SOMEWHERE ELSE
      */
 
+    public void addToFoundation(Card card) {
+        for (Foundation foundation : foundations){
+            if (foundation.getSuit() == card.getSuit()) {
+                foundation.addToFoundation(card);
+            }
+        }
+    }
 
     public void addToColumn() {
 

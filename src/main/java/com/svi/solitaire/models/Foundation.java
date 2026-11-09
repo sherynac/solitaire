@@ -17,6 +17,10 @@ public class Foundation {
         return foundation.size();
     }
 
+    public Suit getSuit() {
+        return suit;
+    }
+
     public void addToFoundation(Card card) {
         if (card.getSuit() == suit) {
             foundation.push(card);

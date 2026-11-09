@@ -61,8 +61,8 @@ public class Dealer {
         return tableau;
     }
 
-    public List<Card> placeTalon() {
-        return cards;
+    public Deque<Card> placeTalon() {
+        return new ArrayDeque<>(cards);
     }
 
     public void clearCards() {
