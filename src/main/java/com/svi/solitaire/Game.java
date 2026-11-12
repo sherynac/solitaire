@@ -5,24 +5,26 @@ import com.svi.solitaire.enums.ShuffleType;
 import com.svi.solitaire.enums.Suit;
 import com.svi.solitaire.models.*;
 import com.svi.solitaire.utils.ColorHelper;
+import com.svi.solitaire.utils.InputHandler;
+import com.svi.solitaire.utils.Solver;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+
 
 public class Game {
-    private Tableau tableau;
+    private Maneuver maneuver;
     private Talon talon;
     private List<Foundation> foundations;
     private Dealer dealer;
-    private Scanner scanner;
+    private Solver solver;
 
-    public Game(Scanner scanner){
-        this.scanner = scanner;
+    public Game() {
         this.dealer = new Dealer();
         foundations = new ArrayList<>();
+        this.solver = new Solver(this);
 
-        for (Suit suit: Suit.values()){
+        for (Suit suit: Suit.values()) {
             Foundation foundation = new Foundation(suit);
             foundations.add(foundation);
         }
@@ -37,10 +39,13 @@ public class Game {
             displayCurrentState();
             talon.drawCards();
 
-            addToFoundation(talon.drawWaste());
+            Card card = talon.drawWaste();
+            System.out.println("DRAWN: " + card);
+
+
+            addToFoundation(card);
 
             displayCurrentState();
-            System.out.println("DRAWN: " + talon.drawWaste());
 
             displayCurrentState();
 
@@ -53,63 +58,23 @@ public class Game {
 //        }
     }
 
-    public void setupGame(){
+    public void setupGame() {
         System.out.println("========== Welcome to Solitaire! ==========");
         System.out.println("\n!! Game Mode !! ");
-        int drawCount = inputDrawChoice(scanner);
+        int drawCount = InputHandler.inputDrawCount();
         System.out.println(ColorHelper.color("Game is set to draw " + drawCount + " from talon.", "YELLOW"));
 
-        ShuffleType shuffleChoice = inputShuffleChoice(scanner);
+        ShuffleType shuffleChoice = InputHandler.inputShuffleChoice();
 
         System.out.println(ColorHelper.color("\nDealer is shuffling the deck...", "YELLOW"));
         dealer.shuffleDeck(shuffleChoice);
         System.out.println(dealer.showCards());
 
-        this.tableau = dealer.dealCards();
+        this.maneuver = dealer.dealCards();
         this.talon = new Talon(drawCount, dealer.placeTalon());
     }
 
-    private int inputDrawChoice(Scanner scanner){
-        int drawChoice;
-
-        while(true) {
-            try {
-                System.out.print("\nEnter '1' for draw one and '3' for draw three (1,3): ");
-                drawChoice = Integer.parseInt(scanner.nextLine());
-                if (drawChoice == 1 || drawChoice == 3) {
-                    return drawChoice;
-                } else {
-                    System.out.println("Make sure to enter either 1 or 3 only.");
-                }
-            } catch (NumberFormatException nfe){
-                System.out.println("Make sure to enter a number.");
-            }
-        }
-    }
-
-    private ShuffleType inputShuffleChoice(Scanner scanner){
-        int shuffleChoice;
-
-        while(true) {
-            try {
-                System.out.print("\nEnter '1' for perfect shuffle and '2' for random shuffle (1,2): ");
-                shuffleChoice = Integer.parseInt(scanner.nextLine());
-                if (shuffleChoice == 1) {
-                    System.out.println(ColorHelper.color("Shuffle type is set to perfect shuffle.", "YELLOW"));
-                    return ShuffleType.PERFECT;
-                } else if (shuffleChoice == 2) {
-                    System.out.println(ColorHelper.color("Shuffle type is set to random shuffle.", "YELLOW"));
-                    return ShuffleType.RANDOM;
-                } else {
-                    System.out.println("Make sure to enter either 1 or 2 only.");
-                }
-            } catch (NumberFormatException nfe){
-                System.out.println("Make sure to enter a number.");
-            }
-        }
-    }
-
-    public void displayCurrentState(){
+    public void displayCurrentState() {
         System.out.println(ColorHelper.color("\n====================== Move #: ==========================", "BLUE"));
 
         System.out.printf("%n%-13s", "Stock");
@@ -119,12 +84,12 @@ public class Game {
         System.out.printf("%n%-13s", talon.stockString());
         System.out.printf("%-20s", talon.wasteString());
 
-        for (Foundation foundation: foundations){
+        for (Foundation foundation: foundations) {
             System.out.print(foundation + " ");
         }
 
         System.out.println("\n\n---------------------------------------------------------");
-        System.out.println(tableau);
+        System.out.println(maneuver);
         System.out.println(ColorHelper.color("=========================================================", "BLUE"));
     }
 
@@ -133,31 +98,25 @@ public class Game {
                 .allMatch(foundation -> foundation.getCardCount() == 13);
     }
 
-    /**
-     * TODO: FOLLOWING METHODS MOVE TO SOMEWHERE ELSE
-     */
-
     public void addToFoundation(Card card) {
-        for (Foundation foundation : foundations){
+        for (Foundation foundation : foundations) {
             if (foundation.getSuit() == card.getSuit()) {
-                foundation.addToFoundation(card);
+                foundation.add(card);
             }
         }
     }
 
-    public void addToColumn() {
+    /**
+     * TODO: MOVE CHECKERS FIX LATER ON
+     */
 
+    public boolean canMoveToFoundation (Card card) {
+        if (card.getRank() == Rank.A) {
+            return true;
+        }
+
+        return false;
     }
-
-    public void moveSequence() {
-
-    }
-
-    public void canMoveSequence() {
-
-    }
-
-
 
 
 }

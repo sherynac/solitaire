@@ -5,22 +5,22 @@ import java.util.List;
 
 public class Tableau {
 
-    private List<TableauColumn> columnList;
+    private List<ManueverColumn> columnList;
 
     public Tableau (){
         columnList = new ArrayList<>();
 
         for (int i = 0 ; i < 7; i++){
-            TableauColumn tableauColumn = new TableauColumn();
+            ManueverColumn tableauColumn = new ManueverColumn();
             columnList.add(tableauColumn);
         }
     }
 
-    public Tableau(List<TableauColumn> columns){
+    public Tableau(List<ManueverColumn> columns){
         this.columnList = columns;
     }
 
-    public List<TableauColumn> getColumnList() {
+    public List<ManueverColumn> getColumnList() {
         return columnList;
     }
 
@@ -37,13 +37,13 @@ public class Tableau {
         // Find the maximum number of cards
         int maxHeight = 0;
 
-        for (TableauColumn col : columnList) {
+        for (ManueverColumn col : columnList) {
             maxHeight = Math.max(maxHeight, col.getCardCount());
         }
 
         // Display cards row by row
         for (int row = 0; row < maxHeight; row++) {
-            for (TableauColumn col : columnList) {
+            for (ManueverColumn col : columnList) {
                 if (row < col.getCardCount()) {
                     sb.append(String.format("%-8s", col.getCardAt(row)));
                 } else {

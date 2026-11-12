@@ -8,38 +8,34 @@
 package com.svi.solitaire.enums;
 
 public enum Rank {
-    A(14),
-    K(13),
-    Q(12),
-    J(11),
-    TEN(10),
-    NINE(9),
-    EIGHT(8),
-    SEVEN(7),
-    SIX(6),
-    FIVE(5),
-    FOUR(4),
-    THREE(3),
-    TWO(2);
+    ACE(1,"A"),
+    TWO(2, "2"),
+    THREE(3, "3"),
+    FOUR(4, "4"),
+    FIVE(5, "5"),
+    SIX(6, "6"),
+    SEVEN(7, "7"),
+    EIGHT(8, "8"),
+    NINE(9,"9"),
+    TEN(10,"10"),
+    JACK(11,"J"),
+    QUEEN(12,"Q"),
+    KING(13,"K");
 
-    private final int value;
+    private final int strength;
+    private final String symbol;
 
     /**
      * Constructs a rank with its corresponding numerical value
      *
-     * @param value numerical value assigned to the rank
+     * @param strength numerical value assigned to the rank
      */
-    Rank(int value) {
-        this.value = value;
+    Rank(int strength, String symbol) {
+        this.strength = strength;
+        this.symbol = symbol;
     }
 
-    /**
-     * Returns numerical value of rank
-     *
-     * @return value of Rank
-     */
-    public int getValue() {
-        return value;
+    public int getStrength() {
+        return strength;
     }
-
 }

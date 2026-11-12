@@ -2,14 +2,14 @@ package com.svi.solitaire.models;
 
 import java.util.*;
 
-public class TableauColumn {
+public class ManueverColumn {
     Deque<Card> cardStack;
 
-    public TableauColumn(){
+    public ManueverColumn(){
         cardStack = new ArrayDeque<>();
     }
 
-    public TableauColumn(Deque<Card> cards) {
+    public ManueverColumn(Deque<Card> cards) {
         cardStack = cards;
     }
 
