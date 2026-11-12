@@ -1,7 +1,10 @@
 package com.svi.solitaire.utils;
 
+import com.svi.solitaire.enums.Color;
+import com.svi.solitaire.utils.ColorHelper;
 import com.svi.solitaire.enums.ShuffleType;
 
+import javax.print.DocFlavor;
 import java.util.Scanner;
 
 public class InputHandler {
@@ -10,36 +13,51 @@ public class InputHandler {
     public static int inputDrawCount() {
         int drawChoice;
         final int MINIMUM_DRAW = 1;
-        final int MAXIMUM_DRAW = 3;
-        String drawPrompt = "\nEnter '1' for draw one and '3' for draw three (1,3): ";
+        final int MAXIMUM_DRAW = 2;
+        String drawPrompt = "\nHow many draws from talon?"
+                + "\n1. Draw One"
+                + "\n2. Draw Three"
+                + "\n(1/2)>";
 
-        while (true) {
-            drawChoice = inputInt(drawPrompt, MINIMUM_DRAW, MAXIMUM_DRAW);
-            if (drawChoice != 2) return drawChoice;
-            System.out.println("Make sure to enter either 1 or 3 only.");
-        }
+        drawChoice = inputInt(drawPrompt, MINIMUM_DRAW, MAXIMUM_DRAW);
+        return drawChoice;
     }
 
     public static ShuffleType inputShuffleChoice() {
         int shuffleChoice;
-        final int FIRST_CHOICE = 1;
-        final int SECOND_CHOICE = 2;
-        String shufflePrompt = "\nEnter '1' for perfect shuffle and '2' for random shuffle (1,2): ";
+        final int IN_FARO_SHUFFLE_CHOICE = 1;
+        final int OUT_FARO_SHUFFLE_CHOICE = 2;
+        final int RANDOM_SHUFFLE_CHOICE =3;
+        final int NO_SHUFFLE_CHOICE = 4;
+        String shufflePrompt = "\nHow do you want to shuffle? "
+                + "\n1. Perfect Shuffle (In-Faro)"
+                + "\n2. Perfect Shuffle (Out-Faro)"
+                + "\n3. Random Shuffle"
+                + "\n4. No Shuffle"
+                + "\n(1-4)>";
 
-        shuffleChoice = inputInt(shufflePrompt, FIRST_CHOICE, SECOND_CHOICE);
+        shuffleChoice = inputInt(shufflePrompt, IN_FARO_SHUFFLE_CHOICE, NO_SHUFFLE_CHOICE);
 
-        if (shuffleChoice == FIRST_CHOICE) {
-            System.out.println(ColorHelper.color("Shuffle type is set to perfect shuffle.", "YELLOW"));
-            return ShuffleType.PERFECT;
-        } else {
-            System.out.println(ColorHelper.color("Shuffle type is set to random shuffle.", "YELLOW"));
-            return ShuffleType.RANDOM;
+        switch (shuffleChoice) {
+            case IN_FARO_SHUFFLE_CHOICE:
+                return ShuffleType.IN_FARO;
+            case OUT_FARO_SHUFFLE_CHOICE:
+                return ShuffleType.OUT_FARO;
+            case RANDOM_SHUFFLE_CHOICE:
+                return ShuffleType.RANDOM;
+            case NO_SHUFFLE_CHOICE:
+                return ShuffleType.NO_SHUFFLE;
         }
+
+        throw new NullPointerException("Shuffle Choice does not exist");
     }
 
     public static int inputSimulationChoice() {
         int simChoice;
-        String simPrompt = "\nHow do you want to simulate? \n1. Single Game\n2. Check win rate (100 games)";
+        String simPrompt = "\nHow do you want to simulate?"
+                + "\n1. Single Game"
+                + "\n2. Check win rate (100 games)"
+                +"\n(1/2)> ";
         final int FIRST_CHOICE = 1;
         final int SECOND_CHOICE = 2;
 
@@ -75,6 +93,4 @@ public class InputHandler {
             }
         }
     }
-
-
 }
