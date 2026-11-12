@@ -24,7 +24,7 @@ public class ColorHelper {
         }
 
         return result.append(text)
-                .append(Color.RESET)
+                .append(Color.RESET.getCode())
                 .toString();
     }
 
