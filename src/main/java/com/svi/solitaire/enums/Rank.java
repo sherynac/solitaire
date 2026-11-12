@@ -38,4 +38,8 @@ public enum Rank {
     public int getStrength() {
         return strength;
     }
+
+    public String getSymbol() {
+        return symbol;
+    }
 }

@@ -8,25 +8,22 @@
 package com.svi.solitaire.enums;
 
 public enum Suit {
-    CLUBS(1, 'C'),
-    SPADES(2, 'S'),
-    HEARTS(3, 'H'),
-    DIAMONDS(4, 'D');
+    DIAMONDS('D'),
+    HEARTS('H'),
+    SPADES( 'S'),
+    CLUBS('C');
 
-    private final int strength;
     private final char symbol;
 
     /**
      * Constructs a suit with its corresponding value
      *
-     * @param strength numerical value assigned to the suit
      */
-    Suit(int strength, char symbol) {
-        this.strength = strength;
+    Suit(char symbol) {
         this.symbol = symbol;
     }
 
-    public int getStrength() {
-        return strength;
+    public char getSymbol() {
+        return symbol;
     }
 }

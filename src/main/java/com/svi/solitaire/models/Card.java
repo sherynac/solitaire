@@ -2,7 +2,6 @@ package com.svi.solitaire.models;
 
 import com.svi.solitaire.enums.Rank;
 import com.svi.solitaire.enums.Suit;
-import com.svi.solitaire.utils.ColorHelper;
 
 public class Card {
     private Rank rank;
@@ -40,8 +39,8 @@ public class Card {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(suit).append("-");
-        stringBuilder.append(((rank.getValue() > 10) ? rank : rank.getValue()));
+        stringBuilder.append(suit.getSymbol()).append("-");
+        stringBuilder.append(rank.getSymbol());
 
         return (isVisible
                 ? stringBuilder.toString()
