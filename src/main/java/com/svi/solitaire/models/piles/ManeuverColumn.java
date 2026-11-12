@@ -1,20 +1,26 @@
-package com.svi.solitaire.models;
+package com.svi.solitaire.models.piles;
+
+import com.svi.solitaire.models.Card;
 
 import java.util.*;
 
-public class ManueverColumn {
+public class ManeuverColumn {
     Deque<Card> cardStack;
 
-    public ManueverColumn(){
+    public ManeuverColumn(){
         cardStack = new ArrayDeque<>();
     }
 
-    public ManueverColumn(Deque<Card> cards) {
+    public ManeuverColumn(Deque<Card> cards) {
         cardStack = cards;
     }
 
     public void addCard(Card card) {
         cardStack.push(card);
+    }
+
+    public Deque<Card> getCardStack() {
+        return cardStack;
     }
 
     public int getCardCount(){

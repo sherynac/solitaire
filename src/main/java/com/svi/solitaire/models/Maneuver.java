@@ -1,26 +1,28 @@
 package com.svi.solitaire.models;
 
+import com.svi.solitaire.models.piles.ManeuverColumn;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tableau {
+public class Maneuver {
 
-    private List<ManueverColumn> columnList;
+    private List<ManeuverColumn> columnList;
 
-    public Tableau (){
+    public Maneuver(){
         columnList = new ArrayList<>();
 
         for (int i = 0 ; i < 7; i++){
-            ManueverColumn tableauColumn = new ManueverColumn();
+            ManeuverColumn tableauColumn = new ManeuverColumn();
             columnList.add(tableauColumn);
         }
     }
 
-    public Tableau(List<ManueverColumn> columns){
+    public Maneuver(List<ManeuverColumn> columns){
         this.columnList = columns;
     }
 
-    public List<ManueverColumn> getColumnList() {
+    public List<ManeuverColumn> getColumnList() {
         return columnList;
     }
 
@@ -37,13 +39,13 @@ public class Tableau {
         // Find the maximum number of cards
         int maxHeight = 0;
 
-        for (ManueverColumn col : columnList) {
+        for (ManeuverColumn col : columnList) {
             maxHeight = Math.max(maxHeight, col.getCardCount());
         }
 
         // Display cards row by row
         for (int row = 0; row < maxHeight; row++) {
-            for (ManueverColumn col : columnList) {
+            for (ManeuverColumn col : columnList) {
                 if (row < col.getCardCount()) {
                     sb.append(String.format("%-8s", col.getCardAt(row)));
                 } else {

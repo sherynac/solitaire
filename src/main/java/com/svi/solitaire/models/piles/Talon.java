@@ -1,9 +1,9 @@
-package com.svi.solitaire.models;
+package com.svi.solitaire.models.piles;
+
+import com.svi.solitaire.models.Card;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class Talon {
@@ -29,6 +29,8 @@ public class Talon {
     public void hideWaste(){
         waste.forEach((Card::setInvisible));
     }
+
+
 
     public Card drawWaste() {
         return waste.removeLast();
