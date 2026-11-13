@@ -1,10 +1,9 @@
 package com.svi.solitaire.shuffle;
 
 import com.svi.solitaire.models.Card;
-import com.svi.solitaire.models.Deck;
-
 import java.util.List;
+import java.util.Random;
 
 public interface ShuffleStrategy {
-    List<Card> shuffle(int numShuffles, List<Card> gameDeck);
+    List<Card> shuffle(Random random, List<Card> gameDeck);
 }
