@@ -14,7 +14,7 @@ public class GameManager {
     //TODO: creates new Game for new games, supposedly clear past data
     public void run() {
         boolean willPlayAgain = true;
-        try {
+//        try {
             while (willPlayAgain) {
                 System.out.println("========== Welcome to Solitaire! ==========");
                 System.out.println("\n!! Game Settings !! ");
@@ -26,8 +26,8 @@ public class GameManager {
 
                 ShuffleStrategy shuffleStrategy = ShuffleStrategyFactory.create(shuffleChoice);
 
-                game = GameFactory.create(drawCount);
-
+                game = GameFactory.create(drawCount, shuffleStrategy);
+                game.displayCurrentState();
 
 //                game = new Game(drawCount, shuffleStrategy);
 //                game.setupGame();
@@ -42,15 +42,15 @@ public class GameManager {
 
                 willPlayAgain = InputHandler.playAgain();
             }
-        } catch (Exception e) {
-            System.out.println("Program has encountered an error: " + e.getMessage());
-            System.out.println("Kindly rerun the program");
-        }
+//        } catch (Exception e) {
+//            System.out.println("Program has encountered an error: " + e.getMessage());
+//            System.out.println("Kindly rerun the program");
+//        }
     }
 
 
     public void playSingleGame() {
-        game.setupGame();
+//        game.setupGame();
         game.displayCurrentState();
 
 //        setupGame();
