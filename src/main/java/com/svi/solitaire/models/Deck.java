@@ -6,17 +6,15 @@ import com.svi.solitaire.enums.Suit;
 import com.svi.solitaire.shuffle.ShuffleStrategy;
 import com.svi.solitaire.utils.ColorHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Deck {
-    private List<Card> originalDeck;
-    private List<Card> gameDeck;
+    private Deque<Card> originalDeck;
+    private Deque<Card> gameDeck;
     private ShuffleStrategy shuffleStrategy;
 
-    public Deck() {
-        originalDeck = new ArrayList<>();
+    public Deck(ArrayDeque<Card> cards) {
+        originalDeck = new ArrayDeque<>();
 
         for (Suit suit : Suit.values()) {
             for (Rank rank : Rank.values()) {
@@ -24,7 +22,7 @@ public class Deck {
             }
         }
 
-        gameDeck = new ArrayList<>(originalDeck);
+        gameDeck = new ArrayDeque<>(originalDeck);
     }
 
     public Deck(ShuffleStrategy shuffleStrategy) {
