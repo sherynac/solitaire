@@ -17,7 +17,7 @@ public class InputHandler {
         String drawPrompt = "\nHow many draws from talon?"
                 + "\n1. Draw One"
                 + "\n2. Draw Three"
-                + "\n(1/2)>";
+                + "\n(1/2)> ";
 
         drawChoice = inputInt(drawPrompt, MINIMUM_DRAW, MAXIMUM_DRAW);
         return drawChoice;
@@ -34,7 +34,7 @@ public class InputHandler {
                 + "\n2. Perfect Shuffle (Out-Faro)"
                 + "\n3. Random Shuffle"
                 + "\n4. No Shuffle"
-                + "\n(1-4)>";
+                + "\n(1-4)> ";
 
         shuffleChoice = inputInt(shufflePrompt, IN_FARO_SHUFFLE_CHOICE, NO_SHUFFLE_CHOICE);
 
