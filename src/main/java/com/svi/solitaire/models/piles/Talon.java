@@ -30,8 +30,6 @@ public class Talon {
         waste.forEach((Card::setInvisible));
     }
 
-
-
     public Card drawWaste() {
         return waste.removeLast();
     }

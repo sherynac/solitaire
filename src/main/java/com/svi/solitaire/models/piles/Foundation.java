@@ -31,7 +31,7 @@ public class Foundation implements Pile {
         stringBuilder.append("[");
 
         if (foundation.isEmpty()) {
-            stringBuilder.append(suit.name());
+            stringBuilder.append(suit.getSymbol());
         } else {
             stringBuilder.append(foundation.peek().toString());
         }
