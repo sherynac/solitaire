@@ -3,19 +3,16 @@ package com.svi.solitaire.shuffle.strategies;
 import com.svi.solitaire.models.Card;
 import com.svi.solitaire.shuffle.ShuffleStrategy;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class OutFaroShuffle implements ShuffleStrategy {
 
+    //TODO: debug not working
     @Override
-    public Deque<Card> shuffle(Random random, Deque<Card> gameDeck) {
-        int numShuffles = random.nextInt(100) + 1;
+    public Deque<Card> shuffle(int shuffleCount, Deque<Card> gameDeck) {
         List<Card> cardList = new ArrayList<>(gameDeck);
 
-        for (int k = 0; k < numShuffles; k++) {
+        for (int k = 0; k < shuffleCount; k++) {
             List<Card> list1 = cardList.subList(0,26);
             List<Card> list2 = cardList.subList(26,52);
             List<Card> shuffledDeck = new ArrayList<>();
@@ -27,6 +24,6 @@ public class OutFaroShuffle implements ShuffleStrategy {
             cardList = shuffledDeck;
         }
 
-        return gameDeck;
+        return new ArrayDeque<>(cardList);
     }
 }

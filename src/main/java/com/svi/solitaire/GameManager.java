@@ -6,6 +6,7 @@ import com.svi.solitaire.io.ConsoleView;
 import com.svi.solitaire.io.FileHandler;
 import com.svi.solitaire.models.Deck;
 //import com.svi.solitaire.models.Game;
+import com.svi.solitaire.models.Game;
 import com.svi.solitaire.utils.ColorHelper;
 import com.svi.solitaire.io.InputHandler;
 import com.svi.solitaire.shuffle.ShuffleStrategy;
@@ -17,7 +18,7 @@ import java.util.Random;
 public class GameManager {
     private InputHandler input;
     private FileHandler fileHandler;
-    private Random random;
+    private Random random = new Random();
 
     public GameManager() {
 
@@ -27,13 +28,11 @@ public class GameManager {
     public void run() {
         boolean willPlayAgain = true;
 
-        try {
-
+//        try {
             while (willPlayAgain) {
                 ConsoleView.printWelcome();
 
                 Deck deck = loadDeckWithRetry();
-                System.out.println(deck.size());
                 ConsoleView.printSuccessfulAction("Game has successfully read list of cards.");
 
                 int drawCount = InputHandler.inputDrawCount();
@@ -43,9 +42,23 @@ public class GameManager {
                 ConsoleView.printSuccessfulAction("Game is set to " + shuffleChoice.getLabel() + ".");
 
                 ShuffleStrategy shuffleStrategy = ShuffleStrategyFactory.create(shuffleChoice);
+                int shuffleCount = random.nextInt(100) + 1;
+                System.out.println("number of shuffles: " + shuffleCount);
 
-//                game = GameFactory.create(drawCount, shuffleStrategy);
-//                game.displayCurrentState();
+                deck.setShuffleStrategy(shuffleStrategy);
+
+                ConsoleView.printSuccessfulAction("\nDisplaying initial deck of cards: ");
+                System.out.println(deck);
+
+                deck.shuffleDeck(shuffleCount);
+
+                ConsoleView.printSuccessfulAction("\nDisplaying shuffled deck of cards: ");
+                System.out.println(deck);
+
+                Game game = GameFactory.create(deck, drawCount, shuffleStrategy);
+
+
+                game.displayCurrentState();
 
 //                game = new Game(drawCount, shuffleStrategy);
 //                game.setupGame();
@@ -60,10 +73,10 @@ public class GameManager {
 
                 willPlayAgain = InputHandler.playAgain();
             }
-        } catch (Exception e) {
-            ConsoleView.printErrorMessage("Program has encountered an error: " + e.getMessage());
-            ConsoleView.printErrorMessage("Kindly rerun the program.");
-        }
+//        } catch (Exception e) {
+//            ConsoleView.printErrorMessage("Program has encountered an error: " + e.getMessage());
+//            ConsoleView.printErrorMessage("Kindly rerun the program.");
+//        }
     }
 
     private Deck loadDeckWithRetry() {

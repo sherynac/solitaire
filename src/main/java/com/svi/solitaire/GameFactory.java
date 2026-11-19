@@ -5,32 +5,25 @@ import com.svi.solitaire.models.Card;
 import com.svi.solitaire.models.Deck;
 import com.svi.solitaire.models.Game;
 import com.svi.solitaire.models.Maneuver;
-import com.svi.solitaire.models.piles.Foundation;
-import com.svi.solitaire.models.piles.Talon;
+import com.svi.solitaire.models.piles.FoundationPile;
+import com.svi.solitaire.models.piles.TalonPile;
 import com.svi.solitaire.shuffle.ShuffleStrategy;
 import com.svi.solitaire.utils.CardDealer;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 public class GameFactory {
 
-    public static Game create(int drawCount, ShuffleStrategy shuffleStrategy) {
+    public static Game create(Deck deck, int drawCount, ShuffleStrategy shuffleStrategy) {
 
-        List<Foundation> foundations = new ArrayList<>();
+        Map<Suit, FoundationPile> foundations = new HashMap<>();
         for (Suit suit: Suit.values()) {
-            Foundation foundation = new Foundation(suit);
-            foundations.add(foundation);
+            foundations.put(suit, new FoundationPile(suit));
         }
-
-        Deck deck = new Deck(shuffleStrategy);
-        deck.shuffleDeck();
 
         Maneuver maneuver = CardDealer.dealManeuver(deck);
         Deque<Card> talonCards = CardDealer.dealTalon(deck);
-        Talon talon = new Talon(drawCount, talonCards);
+        TalonPile talon = new TalonPile(drawCount, talonCards);
 
         return new Game (talon, foundations, maneuver);
     }

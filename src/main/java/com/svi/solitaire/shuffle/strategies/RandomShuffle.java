@@ -3,18 +3,16 @@ package com.svi.solitaire.shuffle.strategies;
 import com.svi.solitaire.models.Card;
 import com.svi.solitaire.shuffle.ShuffleStrategy;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class RandomShuffle implements ShuffleStrategy {
 
     @Override
-    public List<Card> shuffle(Random random, List<Card> gameDeck) {
-        int numShuffles = random.nextInt(100) + 1;
-        for (int i = 0; i < numShuffles; i++){
-            Collections.shuffle(gameDeck);
+    public Deque<Card> shuffle(int shuffleCount, Deque<Card> gameDeck) {
+        List<Card> cardList = new ArrayList<>(gameDeck);
+        for (int i = 0; i < shuffleCount; i++){
+            Collections.shuffle(cardList);
         }
-        return gameDeck;
+        return new ArrayDeque<>(cardList);
     }
 }

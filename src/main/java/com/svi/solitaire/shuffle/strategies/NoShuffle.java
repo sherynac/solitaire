@@ -9,7 +9,7 @@ import java.util.Random;
 public class NoShuffle implements ShuffleStrategy {
 
     @Override
-    public Deque<Card> shuffle(Random random, Deque<Card> gameDeck) {
+    public Deque<Card> shuffle(int shuffleCount, Deque<Card> gameDeck) {
         return gameDeck;
     }
 }
