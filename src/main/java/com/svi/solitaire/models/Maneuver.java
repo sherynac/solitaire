@@ -1,52 +1,49 @@
 package com.svi.solitaire.models;
 
-import com.svi.solitaire.models.piles.ManeuverColumn;
+import com.svi.solitaire.models.piles.ManeuverPile;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Maneuver {
 
-    private List<ManeuverColumn> columnList;
+    private List<ManeuverPile> columnList;
 
     public Maneuver(){
         columnList = new ArrayList<>();
 
         for (int i = 0 ; i < 7; i++){
-            ManeuverColumn tableauColumn = new ManeuverColumn();
+            ManeuverPile tableauColumn = new ManeuverPile();
             columnList.add(tableauColumn);
         }
     }
 
-    public Maneuver(List<ManeuverColumn> columns){
+    public Maneuver(List<ManeuverPile> columns){
         this.columnList = columns;
     }
 
-    public List<ManeuverColumn> getColumnList() {
-        return columnList;
+    public void addCard(int columnIndex, Card card) {
+        columnList.get(columnIndex).addLast(card);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        // Display column headers
         for (int i = 0; i < columnList.size(); i++) {
             sb.append(String.format("%-8s", "[" + (i + 1) + "]"));
         }
 
         sb.append("\n\n");
 
-        // Find the maximum number of cards
         int maxHeight = 0;
 
-        for (ManeuverColumn col : columnList) {
-            maxHeight = Math.max(maxHeight, col.getCardCount());
+        for (ManeuverPile col : columnList) {
+            maxHeight = Math.max(maxHeight, col.size());
         }
 
-        // Display cards row by row
         for (int row = 0; row < maxHeight; row++) {
-            for (ManeuverColumn col : columnList) {
-                if (row < col.getCardCount()) {
+            for (ManeuverPile col : columnList) {
+                if (row < col.size()) {
                     sb.append(String.format("%-8s", col.getCardAt(row)));
                 } else {
                     sb.append(String.format("%-8s", ""));

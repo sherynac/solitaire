@@ -4,41 +4,48 @@ import com.svi.solitaire.models.Card;
 
 import java.util.*;
 
-public class ManeuverColumn {
-    Deque<Card> cardStack;
+public class ManeuverPile implements Pile {
+    Deque<Card> cardDeque;
 
-    public ManeuverColumn(){
-        cardStack = new ArrayDeque<>();
+    public ManeuverPile(){
+        cardDeque = new ArrayDeque<>();
     }
 
-    public ManeuverColumn(Deque<Card> cards) {
-        cardStack = cards;
+    public ManeuverPile(Deque<Card> cards) {
+        cardDeque = cards;
     }
 
-    public void addCard(Card card) {
-        cardStack.push(card);
+    @Override
+    public void push(Card card) {
+        cardDeque.push(card);
     }
 
-    public Deque<Card> getCardStack() {
-        return cardStack;
+    public void addLast(Card card) {
+        cardDeque.addLast(card);
     }
 
-    public int getCardCount(){
-        return cardStack.size();
+    @Override
+    public int size() {
+        return cardDeque.size();
+    }
+
+    @Override
+    public void reset() {
+        cardDeque.clear();
     }
 
     public void addCards(Deque<Card> movingCard) {
         for (Card card : movingCard) {
-            cardStack.push(card);
+            cardDeque.push(card);
         }
     }
 
     public Card getCardAt(int index) {
-        if (index < 0 || index >= cardStack.size()) {
+        if (index < 0 || index >= cardDeque.size()) {
             throw new IndexOutOfBoundsException("Invalid card index: " + index);
         }
 
-        Iterator<Card> iterator = cardStack.iterator();
+        Iterator<Card> iterator = cardDeque.iterator();
 
         for (int i = 0; i < index; i++) {
             iterator.next();
@@ -46,12 +53,14 @@ public class ManeuverColumn {
 
         return iterator.next();
     }
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Card card: cardStack){
+        for (Card card: cardDeque){
             stringBuilder.append("\n").append(card);
         }
         return stringBuilder.toString();
     }
+
 }

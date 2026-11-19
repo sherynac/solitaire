@@ -1,10 +1,6 @@
 package com.svi.solitaire.models;
 
-import com.svi.solitaire.enums.Color;
-import com.svi.solitaire.enums.Rank;
-import com.svi.solitaire.enums.Suit;
 import com.svi.solitaire.shuffle.ShuffleStrategy;
-import com.svi.solitaire.utils.ColorHelper;
 
 import java.util.*;
 
@@ -13,35 +9,35 @@ public class Deck {
     private Deque<Card> gameDeck;
     private ShuffleStrategy shuffleStrategy;
 
-    public Deck(ArrayDeque<Card> cards) {
-        originalDeck = new ArrayDeque<>();
-
-        for (Suit suit : Suit.values()) {
-            for (Rank rank : Rank.values()) {
-                originalDeck.add(new Card(suit, rank));
-            }
-        }
-
+    public Deck(Deque<Card> readDeck) {
+        originalDeck = readDeck;
         gameDeck = new ArrayDeque<>(originalDeck);
     }
 
     public Deck(ShuffleStrategy shuffleStrategy) {
-        this();
         this.shuffleStrategy = shuffleStrategy;
     }
 
-    public void shuffleDeck() {
-        Random random = new Random();
-        System.out.println(ColorHelper.color("\nInitial Deck: ", Color.YELLOW));
-        System.out.println(this);
-
-        this.gameDeck = shuffleStrategy.shuffle(random, gameDeck);
-        System.out.println(ColorHelper.color("\nShuffled Deck: ", Color.YELLOW));
-        System.out.println(this);
+    public void addCard(Card card) {
+        originalDeck.addLast(card);
     }
 
-    public List<Card> getGameDeck() {
-        return gameDeck;
+    public Card removeFirst() {
+        return gameDeck.pop();
+    }
+
+    public boolean hasNext() {
+        return gameDeck.iterator().hasNext();
+    }
+
+    public int size() {
+        return originalDeck.size();
+    }
+
+    public void shuffleDeck(int shuffleCount) {
+        Deque<Card> shuffled = shuffleStrategy.shuffle(shuffleCount, new ArrayDeque<>(gameDeck));
+        gameDeck.clear();
+        gameDeck.addAll(shuffled);
     }
 
     public void setShuffleStrategy(ShuffleStrategy shuffleStrategy) {
@@ -51,17 +47,23 @@ public class Deck {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
+        Iterator<Card> deck = gameDeck.iterator();
 
-        for (int i = 0; i < gameDeck.size(); i++) {
-            stringBuilder.append(gameDeck.get(i));
+        int count = 0;
 
-            if ((i + 1) % 15 == 0) {
-                stringBuilder.append("\n");
-            } else if (i != gameDeck.size() - 1) {
-                stringBuilder.append(", ");
+        while (deck.hasNext()) {
+            stringBuilder.append(deck.next());
+            count++;
+
+            if (deck.hasNext()) {
+                if (count % 13 == 0) {
+                    stringBuilder.append(System.lineSeparator());
+                } else {
+                    stringBuilder.append(",");
+                }
             }
         }
+
         return stringBuilder.toString();
     }
-
 }
