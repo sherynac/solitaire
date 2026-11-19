@@ -14,7 +14,7 @@ import java.util.*;
 
 public class GameFactory {
 
-    public static Game create(Deck deck, int drawCount, ShuffleStrategy shuffleStrategy) {
+    public static Game create(Deck deck, int drawCount) {
 
         Map<Suit, FoundationPile> foundations = new HashMap<>();
         for (Suit suit: Suit.values()) {

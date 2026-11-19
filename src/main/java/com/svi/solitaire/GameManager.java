@@ -55,7 +55,7 @@ public class GameManager {
                 ConsoleView.printSuccessfulAction("\nDisplaying shuffled deck of cards: ");
                 System.out.println(deck);
 
-                Game game = GameFactory.create(deck, drawCount, shuffleStrategy);
+                Game game = GameFactory.create(deck, drawCount);
 
 
                 game.displayCurrentState();
