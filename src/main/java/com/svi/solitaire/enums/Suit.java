@@ -8,22 +8,32 @@
 package com.svi.solitaire.enums;
 
 public enum Suit {
-    DIAMONDS('D'),
-    HEARTS('H'),
-    SPADES( 'S'),
-    CLUBS('C');
+    DIAMONDS("D"),
+    HEARTS("H"),
+    SPADES( "S"),
+    CLUBS("C");
 
-    private final char symbol;
+    private final String symbol;
 
     /**
      * Constructs a suit with its corresponding value
      *
      */
-    Suit(char symbol) {
+    Suit(String symbol) {
         this.symbol = symbol;
     }
 
-    public char getSymbol() {
+    public String getSymbol() {
         return symbol;
+    }
+
+    public static Suit fromText(String text) {
+        for (Suit suit : values()) {
+            if (suit.getSymbol().equals(text)) {
+                return suit;
+            }
+        }
+
+        throw new IllegalArgumentException("Suit does not exist: " + text);
     }
 }

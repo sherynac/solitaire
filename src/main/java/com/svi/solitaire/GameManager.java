@@ -2,32 +2,50 @@ package com.svi.solitaire;
 
 import com.svi.solitaire.enums.Color;
 import com.svi.solitaire.enums.ShuffleType;
-import com.svi.solitaire.models.Game;
+import com.svi.solitaire.io.ConsoleView;
+import com.svi.solitaire.io.FileHandler;
+import com.svi.solitaire.models.Deck;
+//import com.svi.solitaire.models.Game;
 import com.svi.solitaire.utils.ColorHelper;
-import com.svi.solitaire.utils.InputHandler;
+import com.svi.solitaire.io.InputHandler;
 import com.svi.solitaire.shuffle.ShuffleStrategy;
 import com.svi.solitaire.shuffle.ShuffleStrategyFactory;
 
+import java.io.IOException;
+import java.util.Random;
+
 public class GameManager {
-    private Game game;
+    private InputHandler input;
+    private FileHandler fileHandler;
+    private Random random;
+
+    public GameManager() {
+
+    }
 
     //TODO: creates new Game for new games, supposedly clear past data
     public void run() {
         boolean willPlayAgain = true;
-//        try {
+
+        try {
+
             while (willPlayAgain) {
-                System.out.println("========== Welcome to Solitaire! ==========");
-                System.out.println("\n!! Game Settings !! ");
+                ConsoleView.printWelcome();
+
+                Deck deck = loadDeckWithRetry();
+                System.out.println(deck.size());
+                ConsoleView.printSuccessfulAction("Game has successfully read list of cards.");
+
                 int drawCount = InputHandler.inputDrawCount();
-                System.out.println(ColorHelper.color("Game is set to draw " + drawCount + " from talon.", Color.YELLOW));
+                ConsoleView.printSuccessfulAction("Game is set to draw " + drawCount + " from talon.");
 
                 ShuffleType shuffleChoice = InputHandler.inputShuffleChoice();
-                System.out.println(ColorHelper.color("Game is set to " + shuffleChoice.getLabel() + ".", Color.YELLOW));
+                ConsoleView.printSuccessfulAction("Game is set to " + shuffleChoice.getLabel() + ".");
 
                 ShuffleStrategy shuffleStrategy = ShuffleStrategyFactory.create(shuffleChoice);
 
-                game = GameFactory.create(drawCount, shuffleStrategy);
-                game.displayCurrentState();
+//                game = GameFactory.create(drawCount, shuffleStrategy);
+//                game.displayCurrentState();
 
 //                game = new Game(drawCount, shuffleStrategy);
 //                game.setupGame();
@@ -42,16 +60,31 @@ public class GameManager {
 
                 willPlayAgain = InputHandler.playAgain();
             }
-//        } catch (Exception e) {
-//            System.out.println("Program has encountered an error: " + e.getMessage());
-//            System.out.println("Kindly rerun the program");
-//        }
+        } catch (Exception e) {
+            ConsoleView.printErrorMessage("Program has encountered an error: " + e.getMessage());
+            ConsoleView.printErrorMessage("Kindly rerun the program.");
+        }
     }
 
+    private Deck loadDeckWithRetry() {
+        while (true) {
+            String filename = InputHandler.inputFileName();
+
+            try {
+                return FileHandler.loadDeck(filename);
+            } catch (IOException e) {
+                ConsoleView.printErrorMessage("Unable to load deck: " + e.getMessage());
+                ConsoleView.printErrorMessage("Kindly enter another filename.");
+            } catch (IllegalArgumentException ie) {
+                ConsoleView.printErrorMessage(ie.getMessage());
+                ConsoleView.printErrorMessage("Kindly enter another filename.");
+            }
+        }
+    }
 
     public void playSingleGame() {
 //        game.setupGame();
-        game.displayCurrentState();
+//        game.displayCurrentState();
 
 //        setupGame();
 //

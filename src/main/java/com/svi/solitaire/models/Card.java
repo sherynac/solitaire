@@ -3,6 +3,8 @@ package com.svi.solitaire.models;
 import com.svi.solitaire.enums.Rank;
 import com.svi.solitaire.enums.Suit;
 
+import java.util.Objects;
+
 public class Card {
     private Rank rank;
     private Suit suit;
@@ -34,6 +36,20 @@ public class Card {
         this.isVisible = false;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Card)) return false;
+
+        Card other = (Card) obj;
+
+        return suit == other.suit && rank == other.rank;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(suit, rank);
+    }
 
     @Override
     public String toString() {
