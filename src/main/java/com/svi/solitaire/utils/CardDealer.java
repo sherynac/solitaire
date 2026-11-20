@@ -1,8 +1,10 @@
 package com.svi.solitaire.utils;
 
+import com.svi.solitaire.Constants;
 import com.svi.solitaire.models.Card;
 import com.svi.solitaire.models.Deck;
 import com.svi.solitaire.models.Maneuver;
+import com.svi.solitaire.models.piles.TalonPile;
 
 import java.util.*;
 
@@ -10,28 +12,29 @@ public class CardDealer {
     public static Maneuver dealManeuver(Deck deck) {
         Maneuver maneuver = new Maneuver();
 
-        for (int i = 0; i < 7;  i++){
-            for (int j = i; j < 7; j++){
+        for (int i = 0; i < Constants.MANEUVER_COLUMNS;  i++){
+            for (int j = i; j < Constants.MANEUVER_COLUMNS; j++){
                 Card card = deck.removeFirst();
 
                 if (j == i) {
-                    card.setVisible();}
-
-                maneuver.addCard(j, card);
+                    maneuver.addVisibleCard(j, card);
+                } else {
+                    maneuver.addCard(j, card);
+                }
             }
         }
 
         return maneuver;
     }
 
-    public static Deque<Card> dealTalon(Deck deck) {
+    public static TalonPile dealTalon(Deck deck, int drawCount) {
 
         Deque<Card> cardDeque = new ArrayDeque<>();
 
         while (deck.hasNext()) {
-            cardDeque.push(deck.removeFirst());
+            cardDeque.addLast(deck.removeFirst());
         }
 
-        return cardDeque;
+        return new TalonPile(drawCount, cardDeque);
     }
 }
