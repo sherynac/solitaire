@@ -22,8 +22,7 @@ public class GameFactory {
         }
 
         Maneuver maneuver = CardDealer.dealManeuver(deck);
-        Deque<Card> talonCards = CardDealer.dealTalon(deck);
-        TalonPile talon = new TalonPile(drawCount, talonCards);
+        TalonPile talon = CardDealer.dealTalon(deck, drawCount);
 
         return new Game (talon, foundations, maneuver);
     }
