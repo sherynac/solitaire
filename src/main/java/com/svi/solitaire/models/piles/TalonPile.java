@@ -52,7 +52,15 @@ public class TalonPile implements Pile {
     }
 
     public void drawCards(){
+        System.out.println("CARDS IN STOCK: ");
+        for (Card card: stock) {
+            System.out.print(card + ",");
+        }
+
         for (int i = 0; i < drawCount; i++) {
+            if (stock.isEmpty()) {
+                return;
+            }
             Card drawnCard = stock.removeFirst(); // D-A,S-A,D-5,C-2 => D-A
             waste.addLast(drawnCard); // D-A
         }

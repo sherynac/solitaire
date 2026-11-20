@@ -76,7 +76,10 @@ public class Game {
 
         foundations.get(card.getSuit()).push(card);
         source.removeLast();
-        source.flipTop();
+
+        if (source.hasHiddenCards()) {
+            source.flipTop();
+        }
     }
 
     public void moveManeuverToManeuver(int from, int to, int count) {

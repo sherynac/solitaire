@@ -124,4 +124,20 @@ public class ManeuverPile implements Pile {
         return card.isOneLowerThan(exposedCard);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("HIDDEN DEQUE: ");
+        for (Card card : hiddenDeque) {
+            stringBuilder.append(card).append(",");
+        }
+
+        stringBuilder.append("\nVISIBLE DEQUE: ");
+        for (Card card : visibleDeque) {
+            stringBuilder.append(card).append(",");
+        }
+
+        return stringBuilder.toString();
+    }
 }

@@ -50,7 +50,7 @@ public class Maneuver {
 
         toPile.addFlippedCards(cardsToMove);
 
-        if (fromPile.hasNoVisibleCards()) {
+        if (fromPile.hasNoVisibleCards() && (!fromPile.isEmpty())) {
             fromPile.flipTop();
         }
     }
