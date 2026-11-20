@@ -2,17 +2,23 @@ package com.svi.solitaire;
 
 import com.svi.solitaire.enums.Color;
 import com.svi.solitaire.enums.ShuffleType;
+import com.svi.solitaire.enums.Suit;
 import com.svi.solitaire.io.ConsoleView;
 import com.svi.solitaire.io.FileHandler;
 import com.svi.solitaire.models.Deck;
 //import com.svi.solitaire.models.Game;
 import com.svi.solitaire.models.Game;
+import com.svi.solitaire.solver.Move;
+import com.svi.solitaire.solver.MoveEvaluator;
+import com.svi.solitaire.solver.MoveExecutor;
+import com.svi.solitaire.solver.MoveGenerator;
 import com.svi.solitaire.utils.ColorHelper;
 import com.svi.solitaire.io.InputHandler;
 import com.svi.solitaire.shuffle.ShuffleStrategy;
 import com.svi.solitaire.shuffle.ShuffleStrategyFactory;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 public class GameManager {
@@ -35,6 +41,14 @@ public class GameManager {
                 Deck deck = loadDeckWithRetry();
                 ConsoleView.printSuccessfulAction("Game has successfully read list of cards.");
 
+//                int simulationChoice = InputHandler.inputSimulationChoice();
+//
+//                if (simulationChoice == 1) {
+//                    playSingleGame();
+//                } else {
+//                    testWinRate();
+//                }
+//
                 int drawCount = InputHandler.inputDrawCount();
                 ConsoleView.printSuccessfulAction("Game is set to draw " + drawCount + " from talon.");
 
@@ -57,19 +71,20 @@ public class GameManager {
 
                 Game game = GameFactory.create(deck, drawCount);
 
-
                 game.displayCurrentState();
 
-//                game = new Game(drawCount, shuffleStrategy);
-//                game.setupGame();
+                MoveGenerator moveGenerator = new MoveGenerator();
+                MoveEvaluator moveEvaluator = new MoveEvaluator();
+                MoveExecutor moveExecutor = new MoveExecutor();
 
-//                int simulationChoice = InputHandler.inputSimulationChoice();
-//
-//                if (simulationChoice == 1) {
-//                    playSingleGame();
-//                } else {
-//                    testWinRate();
-//                }
+
+                while (!game.isGameOver()) {
+                    List<Move> moves = moveGenerator.generate(game);
+                    Move bestMove = moveEvaluator.findBestMove(moves, game);
+                    moveExecutor.execute(bestMove, game);
+                    game.displayCurrentState();
+                }
+
 
                 willPlayAgain = InputHandler.playAgain();
             }

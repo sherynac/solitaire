@@ -1,12 +1,13 @@
 package com.svi.solitaire.models;
 
+import com.svi.solitaire.Constants;
 import com.svi.solitaire.enums.Color;
 import com.svi.solitaire.enums.Suit;
 import com.svi.solitaire.models.piles.FoundationPile;
+import com.svi.solitaire.models.piles.ManeuverPile;
 import com.svi.solitaire.models.piles.TalonPile;
 import com.svi.solitaire.utils.ColorHelper;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -40,34 +41,58 @@ public class Game {
         System.out.println(ColorHelper.color("=========================================================", Color.BLUE));
     }
 
-//    public boolean isGameOver() {
-//        return foundations.stream()
-//                .allMatch(foundation -> foundation.getCardCount() == 13);
-//    }
-//
-//    public void addToFoundation(Card card) {
-//        for (FoundationPile foundation : foundations) {
-//            if (foundation.getSuit() == card.getSuit()) {
-//                foundation.add(card);
-//            }
-//        }
-//    }
+    public Maneuver getManeuver() {
+        return maneuver;
+    }
 
-    /**
-     * TODO: MOVE CHECKERS FIX LATER ON
-     */
+    public TalonPile getTalon() {
+        return talon;
+    }
 
-//    public boolean canMoveToFoundation (Card card) {
-//        if (card.getRank() == Rank.A) {
-//            return true;
-//        }
-//
-//        return false;
-//    }
-//
-//    public void restartGame() {
-//
-//    }
+    public FoundationPile getFoundation(Suit suit) {
+        return foundations.get(suit);
+    }
 
+    public void moveWasteToFoundation() {
+        Card card = talon.peekWaste();
+        if (card == null) throw new IllegalArgumentException("The waste is empty. ");
+
+        foundations.get(card.getSuit()).push(card);
+        talon.removeFromWaste();
+    }
+
+    public void moveWasteToColumn(int column) {
+        Card card = talon.peekWaste();
+        if (card == null) throw new IllegalStateException("The waste is empty.");
+
+        maneuver.getColumn(column).addFlippedCard(card);
+        talon.removeFromWaste();
+    }
+
+    public void moveManeuverToFoundation(int column) {
+        ManeuverPile source = maneuver.getColumn(column);
+        Card card = source.peekLast();
+        if (card == null) throw new IllegalStateException("Column " + column + " is empty.");
+
+        foundations.get(card.getSuit()).push(card);
+        source.removeLast();
+        source.flipTop();
+    }
+
+    public void moveManeuverToManeuver(int from, int to, int count) {
+        maneuver.moveCards(from, to, count);
+    }
+
+    public void drawTalon()    { talon.drawCards(); }
+    public void restackTalon() { talon.restack(); }
+
+    public boolean isGameOver() {
+        for (Map.Entry<Suit, FoundationPile> foundation : foundations.entrySet()) {
+            if (foundation.getValue().size() != Constants.CARD_PER_SUIT) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }

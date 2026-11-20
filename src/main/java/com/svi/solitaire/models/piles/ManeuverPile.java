@@ -1,66 +1,127 @@
 package com.svi.solitaire.models.piles;
 
+import com.svi.solitaire.enums.Rank;
 import com.svi.solitaire.models.Card;
 
 import java.util.*;
 
 public class ManeuverPile implements Pile {
-    Deque<Card> cardDeque;
+    private final Deque<Card> hiddenDeque;
+    private final Deque<Card> visibleDeque;
 
     public ManeuverPile(){
-        cardDeque = new ArrayDeque<>();
-    }
-
-    public ManeuverPile(Deque<Card> cards) {
-        cardDeque = cards;
+        hiddenDeque = new ArrayDeque<>();
+        visibleDeque = new ArrayDeque<>();
     }
 
     @Override
     public void push(Card card) {
-        cardDeque.push(card);
+        visibleDeque.push(card);
+    }
+
+    public Card peekLast() {
+        return visibleDeque.peekLast();
     }
 
     public void addLast(Card card) {
-        cardDeque.addLast(card);
+        hiddenDeque.addLast(card);
+    }
+
+    public void addFlippedCard(Card card) {
+        visibleDeque.addLast(card);
+    }
+
+    public void addFlippedCards(Deque<Card> cards) {
+        visibleDeque.addAll(cards);
+    }
+
+    public void removeLast() {
+        visibleDeque.removeLast();
+    }
+
+    public boolean hasNoVisibleCards() {
+        return visibleDeque.isEmpty();
+    }
+
+    public boolean hasHiddenCards() {
+        return !hiddenDeque.isEmpty();
+    }
+
+
+    public void flipTop() {
+        Card card = hiddenDeque.peekLast();
+        hiddenDeque.removeLast();
+        visibleDeque.addLast(card);
     }
 
     @Override
     public int size() {
-        return cardDeque.size();
+        return hiddenDeque.size() + visibleDeque.size();
+    }
+
+    public int visibleCount() {
+        return visibleDeque.size();
+    }
+
+    public int hiddenCount() {
+        return hiddenDeque.size();
     }
 
     @Override
     public void reset() {
-        cardDeque.clear();
+        hiddenDeque.clear();
+        visibleDeque.clear();
     }
 
-    public void addCards(Deque<Card> movingCard) {
-        for (Card card : movingCard) {
-            cardDeque.push(card);
-        }
+    public boolean isEmpty() {
+        return (hiddenDeque.isEmpty() && visibleDeque.isEmpty());
     }
 
-    public Card getCardAt(int index) {
-        if (index < 0 || index >= cardDeque.size()) {
+    /** n-th card from the top (0 = top), or null. */
+    public Card cardFromTop(int n) {
+        int i = 0;
+        for (Card card : visibleDeque) if (i++ == n) return card;
+        return null;
+    }
+
+//    public void addCards(Deque<Card> movingCard) {
+//        for (Card card : movingCard) {
+//            cardDeque.push(card);
+//        }
+//    }
+
+    public String getDisplayCardAt(int index) {
+        if (index < 0 || index >= size()) {
             throw new IndexOutOfBoundsException("Invalid card index: " + index);
         }
 
-        Iterator<Card> iterator = cardDeque.iterator();
+        if (index < hiddenDeque.size()) {
+            return " ?";
+        }
 
-        for (int i = 0; i < index; i++) {
+        int visibleIndex = index - hiddenDeque.size();
+
+        Iterator<Card> iterator = visibleDeque.iterator();
+
+        for (int i = 0; i < visibleIndex; i++) {
             iterator.next();
         }
 
-        return iterator.next();
+        return iterator.next().toString();
     }
 
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Card card: cardDeque){
-            stringBuilder.append("\n").append(card);
+    public boolean canAccept(Card card) {
+        if (card == null) {
+            return false;
         }
-        return stringBuilder.toString();
+
+        if (visibleDeque.isEmpty()) {
+            return card.getRank() == Rank.KING;
+        }
+
+        Card exposedCard = visibleDeque.peekLast();
+
+        return card.isOneLowerThan(exposedCard);
     }
 
 }

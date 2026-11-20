@@ -5,15 +5,13 @@ import com.svi.solitaire.enums.Suit;
 
 import java.util.Objects;
 
-public class Card {
+public class Card implements Comparable<Card> {
     private Rank rank;
     private Suit suit;
-    private boolean isVisible;
 
-    public Card(Suit suit, Rank rank){
+    public Card(Suit suit, Rank rank)  {
         this.rank = rank;
         this.suit = suit;
-        isVisible = true;
     }
 
     public Rank getRank() {
@@ -24,16 +22,21 @@ public class Card {
         return suit;
     }
 
-    public boolean getVisibility() {
-        return isVisible;
+    public boolean isRed() {
+        if (Suit.HEARTS == suit || Suit.DIAMONDS == suit) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public void setVisible() {
-        this.isVisible = true;
+    public boolean isOppositeColor(Card card) {
+        return !suit.isRed() == card.getSuit().isRed();
     }
 
-    public void setInvisible() {
-        this.isVisible = false;
+    public boolean isOneLowerThan(Card other) {
+        return rank.getValue() == other.getRank().getValue() - 1
+                && isOppositeColor(other);
     }
 
     @Override
@@ -58,8 +61,11 @@ public class Card {
         stringBuilder.append(suit.getSymbol()).append("-");
         stringBuilder.append(rank.getSymbol());
 
-        return (isVisible
-                ? stringBuilder.toString()
-                : " ?");
+        return stringBuilder.toString();
+    }
+
+    @Override
+    public int compareTo(Card o) {
+        return 0;
     }
 }

@@ -4,6 +4,8 @@ import com.svi.solitaire.models.Card;
 
 public interface Pile {
 
-    public void add(Card card);
+    public void push(Card card);
+    public int size();
+    public void reset();
 
 }

@@ -6,35 +6,60 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.stream.Collectors;
 
-public class Talon {
-    int drawCount;
-    Deque<Card> stock;
-    Deque<Card> waste;
+// TODO: can further break this down
+public class TalonPile implements Pile {
+    private int drawCount;
+    private Deque<Card> stock;
+    private Deque<Card> waste;
 
-    public Talon(int drawCount, Deque<Card> stock){
+    public TalonPile(int drawCount, Deque<Card> stock){
         this.drawCount = drawCount;
         this.stock = stock;
         waste = new ArrayDeque<>();
     }
 
+    @Override
+    public void push(Card card) {
+
+    }
+
+
+    @Override
+    public int size() {
+        return 0;
+    }
+
+    @Override
+    public void reset() {
+        stock.clear();
+        waste.clear();
+    }
+
+    public Card peekWaste() {
+        return waste.peekLast();
+    }
+
+    public void removeFromWaste() {
+        waste.removeLast();
+    }
+
+    public boolean canDraw() {
+        return !stock.isEmpty();
+    }
+
+    public boolean canRestack() {
+        return stock.isEmpty() && waste.size() > 1;
+    }
+
     public void drawCards(){
-        hideWaste();
         for (int i = 0; i < drawCount; i++) {
             Card drawnCard = stock.removeFirst(); // D-A,S-A,D-5,C-2 => D-A
-            drawnCard.setVisible();
-            waste.add(drawnCard); // D-A
+            waste.addLast(drawnCard); // D-A
         }
     }
 
-    public void hideWaste(){
-        waste.forEach((Card::setInvisible));
-    }
 
-    public Card drawWaste() {
-        return waste.removeLast();
-    }
-
-    public void returnToStock(){
+    public void restack(){
         stock = new ArrayDeque<>(waste);
         waste.clear();
     }
@@ -49,7 +74,6 @@ public class Talon {
                     waste.stream()
                             .skip(Math.max(0, waste.size() - drawCount))
                             .map(card -> {
-                                card.setVisible();
                                 return card.toString();
                             })
                             .collect(Collectors.joining(", ")));
@@ -61,4 +85,5 @@ public class Talon {
     public String stockString() {
         return "[???] x" + stock.size();
     }
+
 }
