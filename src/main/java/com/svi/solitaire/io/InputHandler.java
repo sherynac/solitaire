@@ -25,15 +25,21 @@ public class InputHandler {
     public static int inputDrawCount() {
         int drawChoice;
         final int MINIMUM_DRAW = 1;
-        final int MAXIMUM_DRAW = 2;
+        final int MAXIMUM_DRAW = 3;
         String drawPrompt = """
                 
                 How many draws from talon?
-                1. Draw One
-                2. Draw Three
-                (1/2)>\s""";
+                1 = Draw One
+                3 = Draw Three
+                (1/3)>\s""";
 
         drawChoice = inputInt(drawPrompt, MINIMUM_DRAW, MAXIMUM_DRAW);
+
+        while (drawChoice != 1 && drawChoice != 3) {
+            ConsoleView.printErrorMessage("Invalid choice. Please enter 1 or 3.");
+            drawChoice = inputInt(drawPrompt, MINIMUM_DRAW, MAXIMUM_DRAW);
+        }
+
         return drawChoice;
     }
 
