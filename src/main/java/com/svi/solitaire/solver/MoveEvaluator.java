@@ -144,7 +144,7 @@ public class MoveEvaluator {
             boolean isDestination = move.getType().isToManeuver() && col == move.getDestination();
             if (isSource || isDestination) continue;
 
-            Card runBase = game.getManeuver().getColumn(col).peekLast();
+            Card runBase = game.getManeuver().getColumn(col).peekTop();
             if (runBase != null && runBase.isOneLowerThan(moved)) return true;
         }
         return false;
@@ -152,7 +152,7 @@ public class MoveEvaluator {
 
     private boolean continuesSameSuit(Move move, Game game) {
         if (!move.getType().isToManeuver()) return false;
-        Card destinationTop = game.getManeuver().getColumn(move.getDestination()).peekLast();
+        Card destinationTop = game.getManeuver().getColumn(move.getDestination()).peekTop();
         return destinationTop != null && destinationTop.getSuit() == movedCard(move, game).getSuit();
     }
 }

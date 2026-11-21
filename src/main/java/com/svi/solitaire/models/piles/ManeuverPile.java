@@ -6,81 +6,73 @@ import com.svi.solitaire.models.Card;
 import java.util.*;
 
 public class ManeuverPile implements Pile {
-    private final Deque<Card> hiddenDeque;
-    private final Deque<Card> visibleDeque;
+    private final Deque<Card> hiddenCards;
+    private final List<Card> visibleCards;
 
     public ManeuverPile(){
-        hiddenDeque = new ArrayDeque<>();
-        visibleDeque = new ArrayDeque<>();
+        hiddenCards = new ArrayDeque<>();
+        visibleCards = new ArrayList<>();
     }
 
-    @Override
-    public void push(Card card) {
-        visibleDeque.push(card);
-    }
-
-    public Card peekLast() {
-        return visibleDeque.peekLast();
-    }
-
-    public void addLast(Card card) {
-        hiddenDeque.addLast(card);
-    }
-
-    public void addFlippedCard(Card card) {
-        visibleDeque.addLast(card);
-    }
-
-    public void addFlippedCards(Deque<Card> cards) {
-        visibleDeque.addAll(cards);
-    }
-
-    public void removeLast() {
-        visibleDeque.removeLast();
+    public void addHidden(Card card) {
+        hiddenCards.addLast(card);
     }
 
     public boolean hasNoVisibleCards() {
-        return visibleDeque.isEmpty();
+        return visibleCards.isEmpty();
     }
 
     public boolean hasHiddenCards() {
-        return !hiddenDeque.isEmpty();
+        return !hiddenCards.isEmpty();
     }
 
 
     public void flipTop() {
-        Card card = hiddenDeque.peekLast();
-        hiddenDeque.removeLast();
-        visibleDeque.addLast(card);
+        Card card = hiddenCards.peekLast();
+        hiddenCards.removeLast();
+        visibleCards.add(card);
     }
 
     @Override
     public int size() {
-        return hiddenDeque.size() + visibleDeque.size();
-    }
-
-    public int visibleCount() {
-        return visibleDeque.size();
-    }
-
-    public int hiddenCount() {
-        return hiddenDeque.size();
+        return hiddenCards.size() + visibleCards.size();
     }
 
     @Override
-    public void reset() {
-        hiddenDeque.clear();
-        visibleDeque.clear();
+    public Card peekTop() {
+        return visibleCards.isEmpty() ? null : visibleCards.get(visibleCards.size() - 1);
+    }
+
+    @Override
+    public void add(Card card) {
+        visibleCards.add(card);
+    }
+
+    public void add (List<Card> cards) {
+        visibleCards.addAll(cards);
+    }
+
+    @Override
+    public Card removeTop() {
+        return visibleCards.remove(visibleCount() -1);
+    }
+
+    public int visibleCount() {
+        return visibleCards.size();
+    }
+
+    public int hiddenCount() {
+        return hiddenCards.size();
     }
 
     public boolean isEmpty() {
-        return (hiddenDeque.isEmpty() && visibleDeque.isEmpty());
+        return (hiddenCards.isEmpty() && visibleCards.isEmpty());
     }
 
     /** n-th card from the top (0 = top), or null. */
     public Card cardFromTop(int n) {
         int i = 0;
-        for (Card card : visibleDeque) if (i++ == n) return card;
+        for (Card card : visibleCards) if (i++ == n) return card;
         return null;
     }
 
@@ -95,13 +87,13 @@ public class ManeuverPile implements Pile {
             throw new IndexOutOfBoundsException("Invalid card index: " + index);
         }
 
-        if (index < hiddenDeque.size()) {
+        if (index < hiddenCards.size()) {
             return " ?";
         }
 
-        int visibleIndex = index - hiddenDeque.size();
+        int visibleIndex = index - hiddenCards.size();
 
-        Iterator<Card> iterator = visibleDeque.iterator();
+        Iterator<Card> iterator = visibleCards.iterator();
 
         for (int i = 0; i < visibleIndex; i++) {
             iterator.next();
@@ -115,11 +107,11 @@ public class ManeuverPile implements Pile {
             return false;
         }
 
-        if (visibleDeque.isEmpty()) {
+        if (visibleCards.isEmpty()) {
             return card.getRank() == Rank.KING;
         }
 
-        Card exposedCard = visibleDeque.peekLast();
+        Card exposedCard = visibleCards.get(visibleCount()-1);
 
         return card.isOneLowerThan(exposedCard);
     }
@@ -129,12 +121,12 @@ public class ManeuverPile implements Pile {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("HIDDEN DEQUE: ");
-        for (Card card : hiddenDeque) {
+        for (Card card : hiddenCards) {
             stringBuilder.append(card).append(",");
         }
 
         stringBuilder.append("\nVISIBLE DEQUE: ");
-        for (Card card : visibleDeque) {
+        for (Card card : visibleCards) {
             stringBuilder.append(card).append(",");
         }
 

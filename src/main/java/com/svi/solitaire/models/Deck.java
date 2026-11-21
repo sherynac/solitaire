@@ -26,6 +26,8 @@ public class Deck {
         return gameDeck.pop();
     }
 
+    public Card removeLast() {return gameDeck.removeLast();}
+
     public boolean hasNext() {
         return gameDeck.iterator().hasNext();
     }

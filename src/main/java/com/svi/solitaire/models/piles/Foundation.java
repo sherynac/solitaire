@@ -4,24 +4,15 @@ import com.svi.solitaire.enums.Rank;
 import com.svi.solitaire.enums.Suit;
 import com.svi.solitaire.models.Card;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-
-public class FoundationPile implements Pile {
+public class Foundation extends DequePile {
     private Suit suit;
-    private Deque<Card> foundation;
 
-    public FoundationPile(Suit suit) {
+    public Foundation(Suit suit) {
         this.suit = suit;
-        foundation = new ArrayDeque<>();
     }
 
     public Suit getSuit() {
         return suit;
-    }
-
-    public Card peek() {
-        return foundation.peek();
     }
 
     public boolean canAccept(Card card) {
@@ -29,33 +20,22 @@ public class FoundationPile implements Pile {
             return false;
         }
 
-        if (foundation.isEmpty()) {
+        if (isEmpty()) {
             return card.getRank() == Rank.ACE;
         }
 
-        Card foundationTop = foundation.peek();
+        Card foundationTop = peekTop();
 
         return card.getRank().getValue() == foundationTop.getRank().getValue() + 1;
     }
 
-    @Override
-    public void push(Card card) {
-        if (!canAccept(card)) {
-            throw new IllegalArgumentException("Invalid card for foundation");
-        }
-
-        foundation.push(card);
-    }
-
-    @Override
-    public int size() {
-        return foundation.size();
-    }
-
-    @Override
-    public void reset() {
-        foundation.clear();
-    }
+//    public void push(Card card) {
+//        if (!canAccept(card)) {
+//            throw new IllegalArgumentException("Invalid card for foundation");
+//        }
+//
+//        add(card);
+//    }
 
     @Override
     public String toString() {
@@ -63,10 +43,10 @@ public class FoundationPile implements Pile {
 
         stringBuilder.append("[");
 
-        if (foundation.isEmpty()) {
+        if (isEmpty()) {
             stringBuilder.append(suit.getSymbol());
         } else {
-            stringBuilder.append(foundation.peek().toString());
+            stringBuilder.append(peekTop().toString());
         }
 
         stringBuilder.append("]");

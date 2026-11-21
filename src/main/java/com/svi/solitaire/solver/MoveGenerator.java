@@ -5,9 +5,9 @@ import com.svi.solitaire.enums.MoveType;
 import com.svi.solitaire.models.Card;
 import com.svi.solitaire.models.Game;
 import com.svi.solitaire.models.Maneuver;
-import com.svi.solitaire.models.piles.FoundationPile;
+import com.svi.solitaire.models.piles.Foundation;
 import com.svi.solitaire.models.piles.ManeuverPile;
-import com.svi.solitaire.models.piles.TalonPile;
+import com.svi.solitaire.models.Talon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class MoveGenerator {
             return;
         }
 
-        FoundationPile foundation = game.getFoundation(card.getSuit());
+        Foundation foundation = game.getFoundation(card.getSuit());
 
         if (foundation.canAccept(card)) {
             moves.add(new Move(
@@ -86,7 +86,7 @@ public class MoveGenerator {
     }
 
     private void generateManeuverToFoundation(ManeuverPile source, Game game, int from, List<Move> moves) {
-        Card top = source.peekLast();
+        Card top = source.peekTop();
         if (game.getFoundation(top.getSuit()).canAccept(top)) {
             moves.add(new Move(MoveType.MANEUVER_TO_FOUNDATION, from, top.getSuit().ordinal(), 1));
         }
@@ -108,7 +108,7 @@ public class MoveGenerator {
 
     // TODO: when we need to draw and restack (half)
     private void addTalonCycleMove(Game game, List<Move> moves) {
-        TalonPile talon = game.getTalon();
+        Talon talon = game.getTalon();
         if (talon.canDraw()) moves.add(new Move(MoveType.DRAW, Constants.NONE, Constants.NONE, 0));
         else if (talon.canRestack()) moves.add(new Move(MoveType.RESTACK, Constants.NONE, Constants.NONE, 0));
     }

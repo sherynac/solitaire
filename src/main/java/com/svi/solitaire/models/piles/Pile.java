@@ -4,8 +4,10 @@ import com.svi.solitaire.models.Card;
 
 public interface Pile {
 
-    public void push(Card card);
+    public boolean isEmpty();
     public int size();
-    public void reset();
+    public Card peekTop();
+    public void add(Card card);
+    public Card removeTop();
 
 }

@@ -29,26 +29,26 @@ public class Maneuver {
     }
 
     public void addCard(int columnIndex, Card card) {
-        columnList.get(columnIndex).addLast(card);
+        columnList.get(columnIndex).addHidden(card);
     }
 
     public void addVisibleCard(int columnIndex, Card card) {
-        columnList.get(columnIndex).addFlippedCard(card);
+        columnList.get(columnIndex).add(card);
     }
 
     public void moveCards(int from, int to, int cardCount) {
         ManeuverPile fromPile = getColumn(from);
         ManeuverPile toPile = getColumn(to);
 
-        Deque<Card> cardsToMove = new ArrayDeque<>();
+        List<Card> cardsToMove = new ArrayList<>();
 
         for (int counter = 0; counter < cardCount; counter++) {
-            Card card = fromPile.peekLast();
-            cardsToMove.addFirst(card);
-            fromPile.removeLast();
+            Card card = fromPile.peekTop();
+            cardsToMove.add(card);
+            fromPile.removeTop();
         }
 
-        toPile.addFlippedCards(cardsToMove);
+        toPile.add(cardsToMove);
 
         if (fromPile.hasNoVisibleCards() && (!fromPile.isEmpty())) {
             fromPile.flipTop();

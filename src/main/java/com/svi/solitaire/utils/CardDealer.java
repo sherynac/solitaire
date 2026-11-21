@@ -4,9 +4,8 @@ import com.svi.solitaire.Constants;
 import com.svi.solitaire.models.Card;
 import com.svi.solitaire.models.Deck;
 import com.svi.solitaire.models.Maneuver;
-import com.svi.solitaire.models.piles.TalonPile;
-
-import java.util.*;
+import com.svi.solitaire.models.Talon;
+import com.svi.solitaire.models.piles.Stock;
 
 public class CardDealer {
     public static Maneuver dealManeuver(Deck deck) {
@@ -27,14 +26,13 @@ public class CardDealer {
         return maneuver;
     }
 
-    public static TalonPile dealTalon(Deck deck, int drawCount) {
-
-        Deque<Card> cardDeque = new ArrayDeque<>();
+    public static Talon dealTalon(Deck deck, int drawCount) {
+        Stock stock = new Stock();
 
         while (deck.hasNext()) {
-            cardDeque.addLast(deck.removeFirst());
+            stock.add(deck.removeLast());
         }
 
-        return new TalonPile(drawCount, cardDeque);
+        return new Talon(drawCount, stock);
     }
 }

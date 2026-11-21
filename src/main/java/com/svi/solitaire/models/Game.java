@@ -3,9 +3,8 @@ package com.svi.solitaire.models;
 import com.svi.solitaire.Constants;
 import com.svi.solitaire.enums.Color;
 import com.svi.solitaire.enums.Suit;
-import com.svi.solitaire.models.piles.FoundationPile;
+import com.svi.solitaire.models.piles.Foundation;
 import com.svi.solitaire.models.piles.ManeuverPile;
-import com.svi.solitaire.models.piles.TalonPile;
 import com.svi.solitaire.utils.ColorHelper;
 
 import java.util.Map;
@@ -13,10 +12,10 @@ import java.util.Map;
 
 public class Game {
     private Maneuver maneuver;
-    private TalonPile talon;
-    private Map<Suit, FoundationPile> foundations;
+    private Talon talon;
+    private Map<Suit, Foundation> foundations;
 
-    public Game(TalonPile talon, Map<Suit, FoundationPile> foundations, Maneuver maneuver) {
+    public Game(Talon talon, Map<Suit, Foundation> foundations, Maneuver maneuver) {
         this.talon = talon;
         this.foundations = foundations;
         this.maneuver = maneuver;
@@ -25,14 +24,14 @@ public class Game {
     public void displayCurrentState() {
         System.out.println(ColorHelper.color("\n====================== Move #: ==========================", Color.BLUE));
 
-        System.out.printf("%n%-13s", "Stock");
+        System.out.printf("%n%-13s", "StockPile");
         System.out.printf("%-20s", "Waste");
         System.out.print("Foundation");
 
         System.out.printf("%n%-13s", talon.stockString());
         System.out.printf("%-20s", talon.wasteString());
 
-        for (Map.Entry<Suit, FoundationPile> entry : foundations.entrySet()) {
+        for (Map.Entry<Suit, Foundation> entry : foundations.entrySet()) {
             System.out.print(entry.getValue());
         }
 
@@ -45,11 +44,11 @@ public class Game {
         return maneuver;
     }
 
-    public TalonPile getTalon() {
+    public Talon getTalon() {
         return talon;
     }
 
-    public FoundationPile getFoundation(Suit suit) {
+    public Foundation getFoundation(Suit suit) {
         return foundations.get(suit);
     }
 
@@ -57,7 +56,7 @@ public class Game {
         Card card = talon.peekWaste();
         if (card == null) throw new IllegalArgumentException("The waste is empty. ");
 
-        foundations.get(card.getSuit()).push(card);
+        foundations.get(card.getSuit()).add(card);
         talon.removeFromWaste();
     }
 
@@ -65,17 +64,17 @@ public class Game {
         Card card = talon.peekWaste();
         if (card == null) throw new IllegalStateException("The waste is empty.");
 
-        maneuver.getColumn(column).addFlippedCard(card);
+        maneuver.getColumn(column).add(card);
         talon.removeFromWaste();
     }
 
     public void moveManeuverToFoundation(int column) {
         ManeuverPile source = maneuver.getColumn(column);
-        Card card = source.peekLast();
+        Card card = source.peekTop();
         if (card == null) throw new IllegalStateException("Column " + column + " is empty.");
 
-        foundations.get(card.getSuit()).push(card);
-        source.removeLast();
+        foundations.get(card.getSuit()).add(card);
+        source.removeTop();
 
         if (source.hasHiddenCards()) {
             source.flipTop();
@@ -90,7 +89,7 @@ public class Game {
     public void restackTalon() { talon.restack(); }
 
     public boolean isGameOver() {
-        for (Map.Entry<Suit, FoundationPile> foundation : foundations.entrySet()) {
+        for (Map.Entry<Suit, Foundation> foundation : foundations.entrySet()) {
             if (foundation.getValue().size() != Constants.CARD_PER_SUIT) {
                 return false;
             }
