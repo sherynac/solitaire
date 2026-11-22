@@ -30,6 +30,10 @@ public class Talon {
         return stock.isEmpty() && waste.size() > 1;
     }
 
+    public int size() {
+        return stock.size() + waste.size();
+    }
+
     public void drawCards(){
         for (int i = 0; i < drawCount; i++) {
             if (stock.isEmpty()) {

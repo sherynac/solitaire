@@ -42,6 +42,11 @@ public class Deck {
         this.shuffleStrategy = shuffleStrategy;
     }
 
+    public void reset() {
+        gameDeck.clear();
+        gameDeck.addAll(originalDeck);
+    }
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();

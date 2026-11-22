@@ -42,58 +42,21 @@ public class GameManager {
                 Deck deck = loadDeckWithRetry();
                 ConsoleView.printSuccessfulAction("Game has successfully read list of cards.");
 
-//                int simulationChoice = InputHandler.inputSimulationChoice();
-//
-//                if (simulationChoice == 1) {
-//                    playSingleGame();
-//                } else {
-//                    testWinRate();
-//                }
-//
                 int drawCount = InputHandler.inputDrawCount();
                 ConsoleView.printSuccessfulAction("Game is set to draw " + drawCount + " from talon.");
 
                 ShuffleType shuffleChoice = InputHandler.inputShuffleChoice();
                 ConsoleView.printSuccessfulAction("Game is set to " + shuffleChoice.getLabel() + ".");
 
-                ShuffleStrategy shuffleStrategy = ShuffleStrategyFactory.create(shuffleChoice);
-                int shuffleCount = random.nextInt(100) + 1;
-                System.out.println("number of shuffles: " + shuffleCount);
+                int simulationChoice = InputHandler.inputSimulationChoice();
 
-                deck.setShuffleStrategy(shuffleStrategy);
-
-                ConsoleView.printSuccessfulAction("\nDisplaying initial deck of cards: ");
-                System.out.println(deck);
-
-                deck.shuffleDeck(shuffleCount);
-
-                ConsoleView.printSuccessfulAction("\nDisplaying shuffled deck of cards: ");
-                System.out.println(deck);
-
-                Game game = GameFactory.create(deck, drawCount);
-
-                game.displayCurrentState();
-
-                MoveGenerator moveGenerator = new MoveGenerator();
-                MoveEvaluator moveEvaluator = new MoveEvaluator();
-                MoveExecutor moveExecutor = new MoveExecutor();
-
-
-                int counter = 0;
-                Scanner scanner  = new Scanner(System.in);
-                while (!game.isGameOver()) {
-                    if (counter % 10 == 0) {
-                        System.out.print("Enter to print next 10 moves: ");
-                        scanner.nextLine();
-                    }
-                    List<Move> moves = moveGenerator.generate(game);
-                    Move bestMove = moveEvaluator.findBestMove(moves, game);
-                    if (bestMove == null) break;
-                    moveExecutor.execute(bestMove, game);
-                    game.displayCurrentState();
-                    counter++;
+                if (simulationChoice == 1) {
+                    boolean won = playSingleGame(deck, drawCount, shuffleChoice, true);
+                    ConsoleView.printSuccessfulAction(won ? "Game solved!" : "No more moves. Game not solved.");
+                } else {
+                    double rate = testWinRate(deck, drawCount, shuffleChoice);
+                    ConsoleView.printSuccessfulAction(String.format("Win rate over %d games: %.1f%%", WIN_RATE_GAMES, rate));
                 }
-
 
                 willPlayAgain = InputHandler.playAgain();
             }
@@ -119,45 +82,58 @@ public class GameManager {
         }
     }
 
-    public void playSingleGame() {
-//        game.setupGame();
-//        game.displayCurrentState();
+    private static final int MAX_MOVES = 5000;
+    private static final int WIN_RATE_GAMES = 100;
 
-//        setupGame();
-//
-////        while (!isGameOver()) {
-//        displayCurrentState();
-//        talon.drawCards();
-//        displayCurrentState();
-//        talon.drawCards();
-//
-//        Card card = talon.drawWaste();
-//        System.out.println("DRAWN: " + card);
-//
-//
-//        addToFoundation(card);
-//
-//        displayCurrentState();
-//
-//        displayCurrentState();
-//
-////            talon.returnToStock();
-////            displayCurrentState();
-//
-//        addToFoundation(talon.drawWaste());
-//        displayCurrentState();
+    public boolean playSingleGame(Deck originalDeck, int drawCount,
+                                  ShuffleType shuffleChoice, boolean verbose) {
+        originalDeck.reset();                     // add a copy() method if you don't have one
+        originalDeck.setShuffleStrategy(ShuffleStrategyFactory.create(shuffleChoice));
 
-//        }
+        if (verbose) {
+            ConsoleView.printSuccessfulAction("\nDisplaying initial deck of cards: ");
+            System.out.println(originalDeck);
+        }
+        originalDeck.shuffleDeck(random.nextInt(100) + 1);
+        if (verbose) {
+            ConsoleView.printSuccessfulAction("\nDisplaying shuffled deck of cards: ");
+            System.out.println(originalDeck);
+        }
 
+        Game game = GameFactory.create(originalDeck, drawCount);
+        if (verbose) game.displayCurrentState();
+
+        MoveGenerator moveGenerator = new MoveGenerator();
+        MoveEvaluator moveEvaluator = new MoveEvaluator();
+        MoveExecutor moveExecutor = new MoveExecutor();
+
+        int moveCount = 0;
+        int talonMovesSinceProgress = 0;
+
+        while (!game.isGameOver() && moveCount < MAX_MOVES) {
+            List<Move> moves = moveGenerator.generate(game);
+            Move bestMove = moveEvaluator.findBestMove(moves, game);
+            if (bestMove == null) break;                        // no useful move
+
+            moveExecutor.execute(bestMove, game);
+            moveCount++;
+
+            if (bestMove.isTalonCycle()) talonMovesSinceProgress++;
+            else talonMovesSinceProgress = 0;
+
+            int cycleLength = game.getTalon().size() + 1;
+            if (talonMovesSinceProgress > cycleLength) break;   // a full pass with no progress: stuck
+
+            if (verbose) game.displayCurrentState();
+        }
+        return game.isGameOver();
     }
 
-//    public void testWinRate() {
-//
-//        for (int index = 0; index < 100; index++) {
-//            game.setupGame();
-//            game.displayCurrentState();
-//
-//            game.restartGame();
-//        }
-//    }
+    public double testWinRate(Deck deck, int drawCount, ShuffleType shuffleChoice) {
+        int wins = 0;
+        for (int i = 0; i < WIN_RATE_GAMES; i++) {
+            if (playSingleGame(deck, drawCount, shuffleChoice, false)) wins++;
+        }
+        return 100.0 * wins / WIN_RATE_GAMES;
+    }
 }
