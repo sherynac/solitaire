@@ -76,7 +76,8 @@ public class Game {
         foundations.get(card.getSuit()).add(card);
         source.removeTop();
 
-        if (source.hasHiddenCards()) {
+        if (source.hasHiddenCards() && source.hasNoVisibleCards()) {
+            System.out.println("I FLIPPED ");
             source.flipTop();
         }
     }

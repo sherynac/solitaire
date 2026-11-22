@@ -7,11 +7,11 @@ import java.util.*;
 
 public class ManeuverPile implements Pile {
     private final Deque<Card> hiddenCards;
-    private final List<Card> visibleCards;
+    private final Deque<Card> visibleCards;
 
     public ManeuverPile(){
         hiddenCards = new ArrayDeque<>();
-        visibleCards = new ArrayList<>();
+        visibleCards = new ArrayDeque<>();
     }
 
     public void addHidden(Card card) {
@@ -29,8 +29,10 @@ public class ManeuverPile implements Pile {
 
     public void flipTop() {
         Card card = hiddenCards.peekLast();
+        System.out.println("FLIPPED " + card);
+
         hiddenCards.removeLast();
-        visibleCards.add(card);
+        visibleCards.addFirst(card);
     }
 
     @Override
@@ -40,7 +42,7 @@ public class ManeuverPile implements Pile {
 
     @Override
     public Card peekTop() {
-        return visibleCards.isEmpty() ? null : visibleCards.get(visibleCards.size() - 1);
+        return visibleCards.peekLast();
     }
 
     @Override
@@ -54,7 +56,7 @@ public class ManeuverPile implements Pile {
 
     @Override
     public Card removeTop() {
-        return visibleCards.remove(visibleCount() -1);
+        return visibleCards.removeLast();
     }
 
     public int visibleCount() {
@@ -70,10 +72,15 @@ public class ManeuverPile implements Pile {
     }
 
     /** n-th card from the top (0 = top), or null. */
+    /** n-th visible card from the top (0 = top card), or null if there is none. */
     public Card cardFromTop(int n) {
-        int i = 0;
-        for (Card card : visibleCards) if (i++ == n) return card;
-        return null;
+        if (n < 0 || n >= visibleCards.size()) {
+            return null;
+        }
+
+        List<Card> visibleList = new ArrayList<>(visibleCards);
+
+        return visibleList.get(visibleCount() - 1 - n);
     }
 
 //    public void addCards(Deque<Card> movingCard) {
@@ -111,7 +118,7 @@ public class ManeuverPile implements Pile {
             return card.getRank() == Rank.KING;
         }
 
-        Card exposedCard = visibleCards.get(visibleCount()-1);
+        Card exposedCard = visibleCards.peekLast();
 
         return card.isOneLowerThan(exposedCard);
     }

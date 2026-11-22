@@ -3,10 +3,6 @@ package com.svi.solitaire.models;
 import com.svi.solitaire.models.piles.Stock;
 import com.svi.solitaire.models.piles.Waste;
 
-import java.util.ArrayDeque;
-import java.util.stream.Collectors;
-
-// TODO: can further break this down
 public class Talon {
     private int drawCount;
     private Stock stock;
@@ -22,8 +18,8 @@ public class Talon {
         return waste.peekTop();
     }
 
-    public void removeFromWaste() {
-        waste.removeTop();
+    public Card removeFromWaste() {
+        return waste.removeTop();
     }
 
     public boolean canDraw() {

@@ -20,6 +20,7 @@ import com.svi.solitaire.shuffle.ShuffleStrategyFactory;
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 public class GameManager {
     private InputHandler input;
@@ -78,11 +79,19 @@ public class GameManager {
                 MoveExecutor moveExecutor = new MoveExecutor();
 
 
+                int counter = 0;
+                Scanner scanner  = new Scanner(System.in);
                 while (!game.isGameOver()) {
+                    if (counter % 10 == 0) {
+                        System.out.print("Enter to print next 10 moves: ");
+                        scanner.nextLine();
+                    }
                     List<Move> moves = moveGenerator.generate(game);
                     Move bestMove = moveEvaluator.findBestMove(moves, game);
+                    if (bestMove == null) break;
                     moveExecutor.execute(bestMove, game);
                     game.displayCurrentState();
+                    counter++;
                 }
 
 

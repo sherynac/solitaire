@@ -69,7 +69,6 @@ public class MoveEvaluator {
         }
         int score = TALON_TO_COLUMN;
         if (followUp) score += FOLLOW_UP_BONUS;
-        if (continuesSameSuit(move, game)) score += SAME_SUIT_BONUS;
         return score;
     }
 
@@ -81,7 +80,6 @@ public class MoveEvaluator {
         int score = isMoveToEmptyColumn(move, game) ? KING_TO_EMPTY_COLUMN : COLUMN_TO_COLUMN;
         score += columnBonus(move, game);
         if (hasFollowUp(move, game)) score += FOLLOW_UP_BONUS;
-        if (continuesSameSuit(move, game)) score += SAME_SUIT_BONUS;
         return score;
     }
 
@@ -148,11 +146,5 @@ public class MoveEvaluator {
             if (runBase != null && runBase.isOneLowerThan(moved)) return true;
         }
         return false;
-    }
-
-    private boolean continuesSameSuit(Move move, Game game) {
-        if (!move.getType().isToManeuver()) return false;
-        Card destinationTop = game.getManeuver().getColumn(move.getDestination()).peekTop();
-        return destinationTop != null && destinationTop.getSuit() == movedCard(move, game).getSuit();
     }
 }

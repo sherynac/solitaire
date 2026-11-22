@@ -5,17 +5,13 @@ import com.svi.solitaire.shuffle.ShuffleStrategy;
 import java.util.*;
 
 public class Deck {
-    private Deque<Card> originalDeck;
-    private Deque<Card> gameDeck;
+    private final Deque<Card> originalDeck;
+    private final Deque<Card> gameDeck;
     private ShuffleStrategy shuffleStrategy;
 
     public Deck(Deque<Card> readDeck) {
         originalDeck = readDeck;
         gameDeck = new ArrayDeque<>(originalDeck);
-    }
-
-    public Deck(ShuffleStrategy shuffleStrategy) {
-        this.shuffleStrategy = shuffleStrategy;
     }
 
     public void addCard(Card card) {

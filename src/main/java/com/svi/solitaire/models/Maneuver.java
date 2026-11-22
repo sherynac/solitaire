@@ -2,10 +2,7 @@ package com.svi.solitaire.models;
 
 import com.svi.solitaire.models.piles.ManeuverPile;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 public class Maneuver {
 
@@ -43,14 +40,14 @@ public class Maneuver {
         List<Card> cardsToMove = new ArrayList<>();
 
         for (int counter = 0; counter < cardCount; counter++) {
-            Card card = fromPile.peekTop();
-            cardsToMove.add(card);
-            fromPile.removeTop();
+            cardsToMove.add(fromPile.removeTop());   // top first
         }
+
+        Collections.reverse(cardsToMove);            // now bottom to top: C-9, D-8, S-7
 
         toPile.add(cardsToMove);
 
-        if (fromPile.hasNoVisibleCards() && (!fromPile.isEmpty())) {
+        if (fromPile.hasNoVisibleCards() && !fromPile.isEmpty()) {
             fromPile.flipTop();
         }
     }
