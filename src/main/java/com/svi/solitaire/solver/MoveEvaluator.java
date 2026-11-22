@@ -1,40 +1,64 @@
 package com.svi.solitaire.solver;
 
-import com.svi.solitaire.Constants;
+import com.svi.solitaire.config.Constants;
 import com.svi.solitaire.enums.Suit;
 import com.svi.solitaire.models.Card;
 import com.svi.solitaire.models.Game;
-import com.svi.solitaire.models.Maneuver;
 import com.svi.solitaire.models.piles.ManeuverPile;
 
 import java.util.List;
 
+/**
+ * Scores every legal move and picks the best one. Read-only: it never changes the game.
+ *
+ * Priority order (highest first):
+ *   1. Safe foundation move (A, 2, or a card no tableau card still needs)
+ *   2. Any column move that flips a hidden card (deeper columns first)
+ *   3. Any column move that empties a column
+ *   4. Talon to column (a king only if something can follow it)
+ *   5. Talon to foundation (unsafe)
+ *   6. Column to foundation that helps nothing else
+ *   7. Draw
+ *   8. Restack
+ *
+ * A score of 0 means "never play this move". Tier gaps are far larger than any bonus,
+ * so a bonus can never lift a move into a higher tier.
+ */
 public class MoveEvaluator {
-    // tiers
+
+    // ---------------- tiers ----------------
     private static final int SAFE_FOUNDATION = 1000;
-    private static final int KING_TO_EMPTY_COLUMN = 500;
-    private static final int COLUMN_TO_COLUMN = 300;
+    private static final int REVEAL = 800;               // + hidden cards under the run
+    private static final int EMPTY_COLUMN = 600;
     private static final int TALON_TO_COLUMN = 200;
-    private static final int UNSAFE_FOUNDATION_USEFUL = 150;
-    private static final int UNSAFE_FOUNDATION = 20;
+    private static final int TALON_TO_FOUNDATION = 100;  // unsafe, from the waste
+    private static final int USELESS_FOUNDATION = 20;    // unsafe, from a column, helps nothing else
     private static final int DRAW_SCORE = 10;
     private static final int RESTACK_SCORE = 5;
-    // bonuses
-    private static final int REVEAL_BONUS = 30;        // plus 1 per hidden card (longer column = better)
-    private static final int EMPTY_COLUMN_BONUS = 25;
-    private static final int FOLLOW_UP_BONUS = 15;
-    private static final int SAME_SUIT_BONUS = 10;
 
+    // ---------------- bonus ----------------
+    private static final int FOLLOW_UP_BONUS = 15;
+
+    private boolean debug = false;
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+
+    // ---------------- selection ----------------
+
+    /** Returns the highest-scoring move, or null when nothing scores above 0. */
     public Move findBestMove(List<Move> moves, Game game) {
         Move best = null;
-        int bestScore = 0;                              // moves scoring 0 are never chosen
+        int bestScore = 0;                               // moves scoring 0 are never chosen
         for (Move move : moves) {
             int score = evaluate(move, game);
-            if (score > bestScore) {
+            if (debug) System.out.println(move + ": " + score);
+            if (score > bestScore) {                     // on a tie, the first generated move wins
                 best = move;
                 bestScore = score;
             }
-            System.out.println(move + ": " + score);
+            System.out.println(move + " SCORE: " + score);
         }
         return best;
     }
@@ -54,50 +78,73 @@ public class MoveEvaluator {
     // ---------------- one evaluator per kind of move ----------------
 
     private int toFoundationEvaluator(Move move, Game game) {
-        if (isSafeForFoundation(movedCard(move, game), game)) {
-            return SAFE_FOUNDATION + columnBonus(move, game);
+        Card card = movedCard(move, game);
+        if (card == null) return 0;
+
+        // 1. A, 2, or any card nothing in the tableau still needs
+        if (isSafeForFoundation(card, game)) {
+            return SAFE_FOUNDATION + hiddenCardsUnder(move, game);   // tie-break: dig the deepest column
         }
-        boolean useful = revealsHiddenCard(move, game) || emptiesColumn(move, game);
-        return useful ? UNSAFE_FOUNDATION_USEFUL + columnBonus(move, game) : UNSAFE_FOUNDATION;
+        // 5. unsafe card from the waste: allowed, but low priority
+        if (move.getType().isFromTalon()) {
+            return TALON_TO_FOUNDATION;
+        }
+        // 2 and 3. unsafe card from a column, but it flips a card or empties the column
+        if (revealsHiddenCard(move, game)) {
+            return REVEAL + hiddenCardsUnder(move, game);
+        }
+        if (emptiesColumn(move, game)) {
+            return EMPTY_COLUMN;
+        }
+        // 6. nothing else to gain
+        return USELESS_FOUNDATION;
     }
 
     private int talonToManeuverEvaluator(Move move, Game game) {
         boolean followUp = hasFollowUp(move, game);
 
-        if (isMoveToEmptyColumn(move, game)) {                       // a King from the waste
-            return followUp ? KING_TO_EMPTY_COLUMN + FOLLOW_UP_BONUS : 0;   // not always worth it
+        // a king from the waste only goes to an empty column if something can follow it
+        if (isMoveToEmptyColumn(move, game) && !followUp) {
+            return 0;
         }
-        int score = TALON_TO_COLUMN;
-        if (followUp) score += FOLLOW_UP_BONUS;
-        return score;
+        return TALON_TO_COLUMN + (followUp ? FOLLOW_UP_BONUS : 0);
     }
 
     private int maneuverToManeuverEvaluator(Move move, Game game) {
         boolean reveals = revealsHiddenCard(move, game);
         boolean empties = emptiesColumn(move, game);
-        if (!reveals && !empties) return 0;
 
-        int score = isMoveToEmptyColumn(move, game) ? KING_TO_EMPTY_COLUMN : COLUMN_TO_COLUMN;
-        score += columnBonus(move, game);
+        ManeuverPile src = game.getManeuver().getColumn(move.getSource());
+        System.out.println(move
+                + " | empties=" + emptiesColumn(move, game)
+                + " | srcSize=" + src.size()
+                + " | count=" + move.getCardCount()
+                + " | destEmpty=" + isMoveToEmptyColumn(move, game));
+
+        if (!reveals && !empties) return 0;              // never shuffle cards for nothing
+
+        int score = reveals ? REVEAL + hiddenCardsUnder(move, game) : EMPTY_COLUMN;
         if (hasFollowUp(move, game)) score += FOLLOW_UP_BONUS;
-        return score;
-    }
 
-    private int columnBonus(Move move, Game game) {
-        int bonus = 0;
-        if (revealsHiddenCard(move, game)) bonus += REVEAL_BONUS + hiddenCardsUnder(move, game);
-        if (emptiesColumn(move, game)) bonus += EMPTY_COLUMN_BONUS;
-        return bonus;
+
+        return score;
     }
 
     // ---------------- yes/no questions about a move (read-only) ----------------
 
+    /** The card that must fit on the destination: the waste card, or the BASE of a moved run. */
     private Card movedCard(Move move, Game game) {
         if (move.getType().isFromTalon()) return game.getTalon().peekWaste();
         return game.getManeuver().getColumn(move.getSource()).cardFromTop(move.getCardCount() - 1);
     }
 
-    /** A and 2 are always safe. Otherwise both opposite-colour cards one rank lower must already be up. */
+    /** The card left exposed at the destination after the move: the TOP of the moved cards. */
+    private Card exposedCardAfterMove(Move move, Game game) {
+        if (move.getType().isFromTalon()) return game.getTalon().peekWaste();
+        return game.getManeuver().getColumn(move.getSource()).peekTop();
+    }
+
+    /** A and 2 are always safe. Otherwise both opposite-colour foundations must already be at rank - 1. */
     private boolean isSafeForFoundation(Card card, Game game) {
         int rank = card.getRank().getValue();
         if (rank <= 2) return true;
@@ -109,6 +156,7 @@ public class MoveEvaluator {
         return true;
     }
 
+    /** True if the move takes the whole visible run, so a hidden card flips. */
     private boolean revealsHiddenCard(Move move, Game game) {
         if (move.getSource() == Constants.NONE) return false;
         ManeuverPile source = game.getManeuver().getColumn(move.getSource());
@@ -121,29 +169,44 @@ public class MoveEvaluator {
     }
 
     private boolean emptiesColumn(Move move, Game game) {
-        if (move.getSource() == Constants.NONE) return false;
+        if (move.getType().isFromTalon()) return false;
         ManeuverPile source = game.getManeuver().getColumn(move.getSource());
         return source.size() == move.getCardCount() && !isMoveToEmptyColumn(move, game);
     }
 
     private boolean isMoveToEmptyColumn(Move move, Game game) {
-        return move.getType().isToManeuver() && game.getManeuver().getColumn(move.getDestination()).isEmpty();
+        return move.getType().isToManeuver()
+                && game.getManeuver().getColumn(move.getDestination()).isEmpty();
     }
 
+    /**
+     * True if, after the move, some column's whole visible run could be placed on the card
+     * the move leaves exposed (so a king placed in an empty column has something to follow it).
+     */
     private boolean hasFollowUp(Move move, Game game) {
-        Card moved = movedCard(move, game);
+        Card exposed = exposedCardAfterMove(move, game);
+        if (exposed == null) return false;
 
         if (!move.getType().isFromTalon()) {
             Card wasteTop = game.getTalon().peekWaste();
-            if (wasteTop != null && wasteTop.isOneLowerThan(moved)) return true;
+            if (wasteTop != null && wasteTop.isOneLowerThan(exposed)) return true;
         }
         for (int col = 0; col < Constants.MANEUVER_COLUMNS; col++) {
             boolean isSource = col == move.getSource();
             boolean isDestination = move.getType().isToManeuver() && col == move.getDestination();
             if (isSource || isDestination) continue;
 
-            Card runBase = game.getManeuver().getColumn(col).peekTop();
-            if (runBase != null && runBase.isOneLowerThan(moved)) return true;
+            // The card that would move is the BASE of the column's whole visible run
+            // (for a single visible card, base and top are the same card).
+            ManeuverPile column = game.getManeuver().getColumn(col);
+            Card runBase = column.cardFromTop(column.visibleCount() - 1);   // null if no visible cards
+            if (runBase != null && runBase.isOneLowerThan(exposed)) return true;
+        }
+
+        // Talon cards the player has already SEEN (waste below the top, and stock cards flipped
+        // in an earlier pass). Unseen stock cards are never included, so this is not cheating.
+        for (Card known : game.getTalon().knownCardsBelowTop()) {
+            if (known.isOneLowerThan(exposed)) return true;
         }
         return false;
     }

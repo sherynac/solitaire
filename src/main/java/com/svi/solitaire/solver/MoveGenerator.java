@@ -1,6 +1,6 @@
 package com.svi.solitaire.solver;
 
-import com.svi.solitaire.Constants;
+import com.svi.solitaire.config.Constants;
 import com.svi.solitaire.enums.MoveType;
 import com.svi.solitaire.models.Card;
 import com.svi.solitaire.models.Game;
@@ -41,7 +41,7 @@ public class MoveGenerator {
             moves.add(new Move(
                     MoveType.TALON_TO_FOUNDATION,
                     Constants.NONE,
-                    Constants.NONE,
+                    card.getSuit().ordinal(),
                     1
             ));
         }
@@ -102,6 +102,7 @@ public class MoveGenerator {
                 if (!destination.canAccept(runBase)) continue;
 
                 moves.add(new Move(MoveType.MANEUVER_TO_MANEUVER, from, to, count));
+                System.out.println("MANEUVER TO MANEUVER: FROM " + from + " TO " + to);
             }
         }
     }

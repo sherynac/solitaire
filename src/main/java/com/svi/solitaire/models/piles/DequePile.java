@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.Collections;
 
 public class DequePile implements Pile {
 
@@ -34,6 +35,12 @@ public class DequePile implements Pile {
     @Override
     public Card removeTop() {
         return cards.removeLast();
+    }
+
+    public List<Card> topFirst() {
+        List<Card> list = new ArrayList<>(cards);   // bottom to top
+        Collections.reverse(list);
+        return list;
     }
 
     public void clear() {

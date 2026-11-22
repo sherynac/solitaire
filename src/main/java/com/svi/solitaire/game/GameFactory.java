@@ -1,14 +1,13 @@
-package com.svi.solitaire;
-
+package com.svi.solitaire.game;
 import com.svi.solitaire.enums.Suit;
 import com.svi.solitaire.models.Deck;
 import com.svi.solitaire.models.Game;
 import com.svi.solitaire.models.Maneuver;
-import com.svi.solitaire.models.piles.Foundation;
 import com.svi.solitaire.models.Talon;
-import com.svi.solitaire.utils.CardDealer;
+import com.svi.solitaire.models.piles.Foundation;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameFactory {
 

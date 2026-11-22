@@ -86,6 +86,21 @@ public class InputHandler {
         return simChoice;
     }
 
+    public static int inputNumberOfGames() {
+
+        while (true) {
+            System.out.print("Enter number of games to simulate: ");
+            String line = scanner.nextLine().trim();
+            try {
+                int games = Integer.parseInt(line);
+                if (games > 0) return games;
+            } catch (NumberFormatException ignored) {
+                // fall through to the message below
+            }
+            System.out.println("Please enter a whole number greater than 0.");
+        }
+    }
+
     public static boolean playAgain() {
         while (true) {
             System.out.print("\nDo you want to play again? (y/n): ");

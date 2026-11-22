@@ -1,6 +1,6 @@
-package com.svi.solitaire.utils;
+package com.svi.solitaire.game;
 
-import com.svi.solitaire.Constants;
+import com.svi.solitaire.config.Constants;
 import com.svi.solitaire.models.Card;
 import com.svi.solitaire.models.Deck;
 import com.svi.solitaire.models.Maneuver;
@@ -11,7 +11,7 @@ public class CardDealer {
     public static Maneuver dealManeuver(Deck deck) {
         Maneuver maneuver = new Maneuver();
 
-        for (int i = 0; i < Constants.MANEUVER_COLUMNS;  i++){
+        for (int i = 0; i < Constants.MANEUVER_COLUMNS; i++){
             for (int j = i; j < Constants.MANEUVER_COLUMNS; j++){
                 Card card = deck.removeFirst();
 

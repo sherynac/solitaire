@@ -1,6 +1,6 @@
 package com.svi.solitaire.io;
 
-import com.svi.solitaire.Constants;
+import com.svi.solitaire.config.Constants;
 import com.svi.solitaire.enums.Rank;
 import com.svi.solitaire.enums.Suit;
 import com.svi.solitaire.models.Card;
