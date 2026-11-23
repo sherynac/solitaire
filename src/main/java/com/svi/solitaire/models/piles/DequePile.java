@@ -43,10 +43,6 @@ public class DequePile implements Pile {
         return list;
     }
 
-    public void clear() {
-        cards.clear();
-    }
-
     // DequePile
     protected List<Card> snapshot() {              // bottom to top
         return new ArrayList<>(cards);

@@ -1,6 +1,6 @@
 package com.svi.solitaire.io;
 
-import com.svi.solitaire.enums.Constants;
+import com.svi.solitaire.utils.Constants;
 import com.svi.solitaire.enums.Rank;
 import com.svi.solitaire.enums.Suit;
 import com.svi.solitaire.models.Card;
@@ -24,7 +24,7 @@ public class FileHandler {
         return new Deck(cards);
     }
 
-    private static Deque<Card> readDeck(InputStream input) throws IOException{
+    private static Deque<Card> readDeck(InputStream input) throws IOException {
         Deque<Card> cardsDeque = new ArrayDeque<>();
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(input))) {

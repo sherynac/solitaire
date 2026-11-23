@@ -1,17 +1,10 @@
-/**
- * Represents the ranks of playing cards and their corresponding numerical values.
- *
- * @author Sheryn Cagulada
- * @version October 30, 2026
- */
-
 package com.svi.solitaire.enums;
 
 public enum Rank {
     ACE("A", 1),
-    TWO( "2", 2),
-    THREE( "3", 3),
-    FOUR( "4", 4),
+    TWO("2", 2),
+    THREE("3", 3),
+    FOUR("4", 4),
     FIVE("5", 5),
     SIX("6", 6),
     SEVEN("7", 7),
@@ -25,14 +18,9 @@ public enum Rank {
     private final String symbol;
     private final int value;
 
-    /**
-     * Constructs a rank with its corresponding numerical value
-     *
-     * @param strength numerical value assigned to the rank
-     */
     Rank(String symbol, int value) {
         this.symbol = symbol;
-        this.value=value;
+        this.value = value;
     }
 
     public String getSymbol() {

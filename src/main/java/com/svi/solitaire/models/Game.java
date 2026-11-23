@@ -1,6 +1,8 @@
 package com.svi.solitaire.models;
 
-import com.svi.solitaire.enums.Constants;
+import com.svi.solitaire.models.piles.Maneuver;
+import com.svi.solitaire.models.piles.Talon;
+import com.svi.solitaire.utils.Constants;
 import com.svi.solitaire.enums.Suit;
 import com.svi.solitaire.models.piles.Foundation;
 import com.svi.solitaire.models.piles.ManeuverPile;
@@ -9,21 +11,21 @@ import java.util.Map;
 
 
 public class Game {
-    private ManeuverPile.Maneuver maneuver;
-    private ManeuverPile.Talon talon;
+    private Maneuver maneuver;
+    private Talon talon;
     private Map<Suit, Foundation> foundations;
 
-    public Game(ManeuverPile.Talon talon, Map<Suit, Foundation> foundations, ManeuverPile.Maneuver maneuver) {
+    public Game(Talon talon, Map<Suit, Foundation> foundations, Maneuver maneuver) {
         this.talon = talon;
         this.foundations = foundations;
         this.maneuver = maneuver;
     }
 
-    public ManeuverPile.Maneuver getManeuver() {
+    public Maneuver getManeuver() {
         return maneuver;
     }
 
-    public ManeuverPile.Talon getTalon() {
+    public Talon getTalon() {
         return talon;
     }
 
@@ -91,7 +93,7 @@ public class Game {
             stringBuilder.append(entry.getValue());
         }
 
-        stringBuilder.append("\n\n---------------------------------------------------------");
+        stringBuilder.append("\n\n---------------------------------------------------------\n");
         stringBuilder.append(maneuver);
 
         return stringBuilder.toString();

@@ -1,4 +1,4 @@
-package com.svi.solitaire.enums;
+package com.svi.solitaire.utils;
 
 public final class Constants {
     public static final int DECK_SIZE = 52;

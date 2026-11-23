@@ -1,6 +1,6 @@
 package com.svi.solitaire.solver;
 
-import com.svi.solitaire.enums.Constants;
+import com.svi.solitaire.utils.Constants;
 import com.svi.solitaire.enums.Suit;
 import com.svi.solitaire.models.Card;
 import com.svi.solitaire.models.Game;
@@ -116,12 +116,17 @@ public class MoveEvaluator {
     /** A and 2 are always safe. Otherwise both opposite-colour foundations must already be at rank - 1. */
     private boolean isSafeForFoundation(Card card, Game game) {
         int rank = card.rank().getValue();
-        if (rank <= 2) return true;
+
+        if (rank <= 2) { // automatic A & 2
+            return true;
+        }
+
         for (Suit suit : Suit.values()) {
             if (suit.isRed() != card.isRed() && game.getFoundation(suit).size() < rank - 1) {
                 return false;
             }
         }
+
         return true;
     }
 
