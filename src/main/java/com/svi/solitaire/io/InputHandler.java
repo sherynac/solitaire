@@ -1,6 +1,6 @@
 package com.svi.solitaire.io;
 
-import com.svi.solitaire.enums.ShuffleType;
+import com.svi.solitaire.shuffle.ShuffleType;
 
 import java.util.Scanner;
 

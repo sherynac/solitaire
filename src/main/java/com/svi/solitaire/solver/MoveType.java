@@ -1,4 +1,4 @@
-package com.svi.solitaire.enums;
+package com.svi.solitaire.solver;
 
 public enum MoveType {
     TALON_TO_FOUNDATION,

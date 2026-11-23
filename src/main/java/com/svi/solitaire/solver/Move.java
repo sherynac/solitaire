@@ -1,6 +1,5 @@
 package com.svi.solitaire.solver;
 
-import com.svi.solitaire.enums.MoveType;
 import com.svi.solitaire.enums.Suit;
 
 public class Move {

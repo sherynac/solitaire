@@ -1,6 +1,6 @@
 package com.svi.solitaire.models;
 
-import com.svi.solitaire.config.Constants;
+import com.svi.solitaire.enums.Constants;
 import com.svi.solitaire.enums.Suit;
 import com.svi.solitaire.models.piles.Foundation;
 import com.svi.solitaire.models.piles.ManeuverPile;
@@ -9,21 +9,21 @@ import java.util.Map;
 
 
 public class Game {
-    private Maneuver maneuver;
-    private Talon talon;
+    private ManeuverPile.Maneuver maneuver;
+    private ManeuverPile.Talon talon;
     private Map<Suit, Foundation> foundations;
 
-    public Game(Talon talon, Map<Suit, Foundation> foundations, Maneuver maneuver) {
+    public Game(ManeuverPile.Talon talon, Map<Suit, Foundation> foundations, ManeuverPile.Maneuver maneuver) {
         this.talon = talon;
         this.foundations = foundations;
         this.maneuver = maneuver;
     }
 
-    public Maneuver getManeuver() {
+    public ManeuverPile.Maneuver getManeuver() {
         return maneuver;
     }
 
-    public Talon getTalon() {
+    public ManeuverPile.Talon getTalon() {
         return talon;
     }
 

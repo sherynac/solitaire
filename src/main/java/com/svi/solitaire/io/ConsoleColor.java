@@ -1,4 +1,4 @@
-package com.svi.solitaire.config;
+package com.svi.solitaire.io;
 
 /**
  * Utility for adding color to console display
@@ -6,7 +6,7 @@ package com.svi.solitaire.config;
  * @author Sheryn Ann Cagulada
  * @version October 30, 2026
  */
-public final class Color {
+public final class ConsoleColor {
     public static final String RED = "\u001B[31m";
     public static final String YELLOW = "\u001B[33m";
     public static final String BLUE = "\u001B[34m";

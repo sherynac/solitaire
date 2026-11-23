@@ -1,6 +1,5 @@
 package com.svi.solitaire.shuffle;
 
-import com.svi.solitaire.enums.ShuffleType;
 import com.svi.solitaire.shuffle.strategies.InFaroShuffle;
 import com.svi.solitaire.shuffle.strategies.NoShuffle;
 import com.svi.solitaire.shuffle.strategies.OutFaroShuffle;

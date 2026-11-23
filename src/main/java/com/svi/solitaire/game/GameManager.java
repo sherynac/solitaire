@@ -1,7 +1,7 @@
 package com.svi.solitaire.game;
 
-import com.svi.solitaire.config.Constants;
-import com.svi.solitaire.enums.ShuffleType;
+import com.svi.solitaire.enums.Constants;
+import com.svi.solitaire.shuffle.ShuffleType;
 import com.svi.solitaire.io.ConsoleView;
 import com.svi.solitaire.io.FileHandler;
 import com.svi.solitaire.io.InputHandler;

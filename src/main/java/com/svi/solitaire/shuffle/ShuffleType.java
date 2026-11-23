@@ -1,4 +1,4 @@
-package com.svi.solitaire.enums;
+package com.svi.solitaire.shuffle;
 
 public enum ShuffleType {
     RANDOM("Random Shuffle"),

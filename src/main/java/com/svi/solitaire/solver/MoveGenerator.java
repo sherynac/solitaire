@@ -1,13 +1,10 @@
 package com.svi.solitaire.solver;
 
-import com.svi.solitaire.config.Constants;
-import com.svi.solitaire.enums.MoveType;
+import com.svi.solitaire.enums.Constants;
 import com.svi.solitaire.models.Card;
 import com.svi.solitaire.models.Game;
-import com.svi.solitaire.models.Maneuver;
 import com.svi.solitaire.models.piles.Foundation;
 import com.svi.solitaire.models.piles.ManeuverPile;
-import com.svi.solitaire.models.Talon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +50,7 @@ public class MoveGenerator {
             return;
         }
 
-        Maneuver maneuver = game.getManeuver();
+        ManeuverPile.Maneuver maneuver = game.getManeuver();
 
         for (int i = 0; i < Constants.MANEUVER_COLUMNS; i++) {
             ManeuverPile destination = maneuver.getColumn(i);
@@ -70,7 +67,7 @@ public class MoveGenerator {
     }
 
     private void addManeuverMoves(Game game, List<Move> moves) {
-        Maneuver maneuver = game.getManeuver();
+        ManeuverPile.Maneuver maneuver = game.getManeuver();
 
         for (int from = 0; from < Constants.MANEUVER_COLUMNS; from++) {
 
@@ -90,7 +87,7 @@ public class MoveGenerator {
         }
     }
 
-    private void generateManeuverToManeuver(ManeuverPile source, int from, List<Move> moves, Maneuver maneuver) {
+    private void generateManeuverToManeuver(ManeuverPile source, int from, List<Move> moves, ManeuverPile.Maneuver maneuver) {
         for (int count = 1; count <= source.visibleCount(); count++) {     // every face-up run
             Card runBase = source.cardFromTop(count - 1);
             for (int to = 0; to < Constants.MANEUVER_COLUMNS; to++) {
@@ -105,7 +102,7 @@ public class MoveGenerator {
     }
 
     private void addTalonCycleMove(Game game, List<Move> moves) {
-        Talon talon = game.getTalon();
+        ManeuverPile.Talon talon = game.getTalon();
         if (talon.canDraw()) moves.add(new Move(MoveType.DRAW, Constants.NONE, Constants.NONE, 0));
         else if (talon.canRestack()) moves.add(new Move(MoveType.RESTACK, Constants.NONE, Constants.NONE, 0));
     }

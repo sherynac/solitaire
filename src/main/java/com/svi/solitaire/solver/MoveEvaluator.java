@@ -1,6 +1,6 @@
 package com.svi.solitaire.solver;
 
-import com.svi.solitaire.config.Constants;
+import com.svi.solitaire.enums.Constants;
 import com.svi.solitaire.enums.Suit;
 import com.svi.solitaire.models.Card;
 import com.svi.solitaire.models.Game;
