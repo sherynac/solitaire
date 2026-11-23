@@ -1,6 +1,7 @@
 package com.svi.solitaire.game;
 
-import com.svi.solitaire.enums.Constants;
+import com.svi.solitaire.shuffle.ShuffleStrategy;
+import com.svi.solitaire.utils.Constants;
 import com.svi.solitaire.shuffle.ShuffleType;
 import com.svi.solitaire.io.ConsoleView;
 import com.svi.solitaire.io.FileHandler;
@@ -20,37 +21,15 @@ import java.util.Random;
 
 
 public class GameManager {
-    private final Random random = new Random();
+    private final Random random;
+    private final GameRunner gameRunner;
+    private final SimulationRunner simulationRunner;
 
-    public GameManager() {
-
+    public GameManager(GameRunner gameRunner, SimulationRunner simulationRunner, Random random) {
+        this.random = random;
+        this.gameRunner = gameRunner;
+        this.simulationRunner = simulationRunner;
     }
-
-    /**
-     * Result of a win-rate run.
-     */
-    public static class WinRateResult {
-        private final int games;
-        private final int wins;
-
-        public WinRateResult(int games, int wins) {
-            this.games = games;
-            this.wins = wins;
-        }
-
-        public int getGames() {
-            return games;
-        }
-
-        public int getWins() {
-            return wins;
-        }
-
-        public double getPercentage() {
-            return games == 0 ? 0 : 100.0 * wins / games;
-        }
-    }
-
 
     public void run() {
         boolean willPlayAgain = true;
@@ -71,16 +50,20 @@ public class GameManager {
 
             if (simulationChoice == 1) {
                 int shuffleCount = pickShuffleCount(shuffleChoice);
-                boolean won = playSingleGame(deck, drawCount, shuffleChoice, shuffleCount, true);
+                boolean won = gameRunner.playSingleGame(deck, drawCount, shuffleChoice, shuffleCount, true);
                 ConsoleView.printSuccessfulAction(won ? "Game solved!" : "No more moves. Game not solved.");
             } else {
-                // only a random shuffle needs the user to say how many games to play
                 int randomGames = shuffleChoice == ShuffleType.RANDOM
                         ? InputHandler.inputNumberOfGames()
                         : 0;
-                WinRateResult result = testWinRate(deck, drawCount, shuffleChoice, randomGames);
-                ConsoleView.printSuccessfulAction(String.format("Won %d of %d games (%.1f%%)",
-                        result.getWins(), result.getGames(), result.getPercentage()));
+
+                List<Integer> shuffleCounts = simulationRunner.buildShuffleCounts(shuffleChoice, randomGames);
+                int gamesPlayed = shuffleCounts.size();
+                int wins = simulationRunner.testWins(deck, drawCount, shuffleChoice, shuffleCounts);
+                double winRate = simulationRunner.computeWinRate(wins, gamesPlayed);
+
+                ConsoleView.printSuccessfulAction(
+                        String.format("Won %d of %d games (%.1f%%)", wins, gamesPlayed, winRate));
             }
 
             willPlayAgain = InputHandler.playAgain();
@@ -103,104 +86,10 @@ public class GameManager {
         }
     }
 
-    // ------------------------------------------------------------ one game
-
     /**
      * Shuffle count for a single, watched game: none for "no shuffle", otherwise 1 to 100.
      */
     private int pickShuffleCount(ShuffleType shuffleChoice) {
         return shuffleChoice == ShuffleType.NO_SHUFFLE ? 0 : random.nextInt(Constants.MAX_RANDOM_SHUFFLES) + 1;
-    }
-
-    public boolean playSingleGame(Deck deck, int drawCount, ShuffleType shuffleChoice,
-                                  int shuffleCount, boolean verbose) {
-        deck.reset();
-        deck.setShuffleStrategy(ShuffleStrategyFactory.create(shuffleChoice));
-
-        if (verbose) {
-            ConsoleView.printSuccessfulAction("\nDisplaying initial deck of cards: ");
-            System.out.println(deck);
-        }
-
-        if (shuffleCount > 0) {
-            deck.shuffleDeck(shuffleCount);
-        }
-
-        if (verbose) {
-            System.out.println("Number of shuffles: " + shuffleCount);
-            ConsoleView.printSuccessfulAction("\nDisplaying shuffled deck of cards: ");
-            System.out.println(deck);
-        }
-
-        Game game = GameFactory.create(deck, drawCount);
-        if (verbose) ConsoleView.printGameState(game, null);
-
-        MoveGenerator moveGenerator = new MoveGenerator();
-        MoveEvaluator moveEvaluator = new MoveEvaluator();
-        MoveExecutor moveExecutor = new MoveExecutor();
-
-        int moveCount = 0;
-        int talonMovesSinceProgress = 0;
-
-        while (!game.isGameOver() && moveCount < Constants.MAX_MOVES) {
-            List<Move> moves = moveGenerator.generate(game);
-            Move bestMove = moveEvaluator.findBestMove(moves, game);
-            if (bestMove == null) break;                        // no useful move
-
-            moveExecutor.execute(bestMove, game);
-            moveCount++;
-
-            if (bestMove.isTalonCycle()) talonMovesSinceProgress++;
-            else talonMovesSinceProgress = 0;
-
-            int cycleLength = game.getTalon().size() + 1;
-            if (talonMovesSinceProgress > cycleLength) break;   // a full pass with no progress: stuck
-
-            if (verbose) ConsoleView.printGameState(game, bestMove);
-        }
-        return game.isGameOver();
-    }
-
-    // ------------------------------------------------------------ win rate
-
-    /**
-     * Plays one game per shuffle count in the plan for the chosen shuffle type:
-     * in faro    -> 1..52 shuffles, once each (deterministic, nothing random)
-     * out faro   -> 1..8 shuffles, once each (deterministic, nothing random)
-     * no shuffle -> a single game
-     * random     -> randomGames games, each with a random number of shuffles
-     */
-    public WinRateResult testWinRate(Deck deck, int drawCount, ShuffleType shuffleChoice, int randomGames) {
-        List<Integer> shuffleCounts = buildShuffleCounts(shuffleChoice, randomGames);
-
-        int wins = 0;
-        for (int shuffleCount : shuffleCounts) {
-            if (playSingleGame(deck, drawCount, shuffleChoice, shuffleCount, false)) {
-                wins++;
-            }
-        }
-        return new WinRateResult(shuffleCounts.size(), wins);
-    }
-
-    private List<Integer> buildShuffleCounts(ShuffleType shuffleChoice, int randomGames) {
-        List<Integer> counts = new ArrayList<>();
-
-        switch (shuffleChoice) {
-            case IN_FARO:
-                for (int i = 1; i <= Constants.IN_FARO_CYCLE; i++) counts.add(i);
-                break;
-            case OUT_FARO:
-                for (int i = 1; i <= Constants.OUT_FARO_CYCLE; i++) counts.add(i);
-                break;
-            case NO_SHUFFLE:
-                counts.add(0);
-                break;
-            default:                                            // random shuffle
-                for (int i = 0; i < randomGames; i++) {
-                    counts.add(random.nextInt(Constants.MAX_RANDOM_SHUFFLES) + 1);
-                }
-                break;
-        }
-        return counts;
     }
 }
