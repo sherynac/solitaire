@@ -1,5 +1,6 @@
 package com.svi.solitaire.game;
 
+import com.svi.solitaire.config.Constants;
 import com.svi.solitaire.enums.ShuffleType;
 import com.svi.solitaire.io.ConsoleView;
 import com.svi.solitaire.io.FileHandler;
@@ -17,16 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+
 public class GameManager {
-    private static final int MAX_MOVES = 5000;
-
-    // A faro shuffle is deterministic. After this many shuffles a 52-card deck is back in its
-    // original order, so these are all the distinct outcomes there are to test.
-    private static final int IN_FARO_CYCLE = 52;
-    private static final int OUT_FARO_CYCLE = 8;
-
-    private static final int MAX_RANDOM_SHUFFLES = 100;
-
     private final Random random = new Random();
 
     public GameManager() {
@@ -58,16 +51,16 @@ public class GameManager {
         }
     }
 
-    //TODO: creates new Game for new games, supposedly clear past data
+
     public void run() {
         boolean willPlayAgain = true;
 
+        ConsoleView.printWelcome();
+
+        Deck deck = loadDeckWithRetry();
+        ConsoleView.printSuccessfulAction("Game has successfully read list of cards.");
+
         while (willPlayAgain) {
-            ConsoleView.printWelcome();
-
-            Deck deck = loadDeckWithRetry();
-            ConsoleView.printSuccessfulAction("Game has successfully read list of cards.");
-
             int drawCount = InputHandler.inputDrawCount();
             ConsoleView.printSuccessfulAction("Game is set to draw " + drawCount + " from talon.");
 
@@ -116,12 +109,12 @@ public class GameManager {
      * Shuffle count for a single, watched game: none for "no shuffle", otherwise 1 to 100.
      */
     private int pickShuffleCount(ShuffleType shuffleChoice) {
-        return shuffleChoice == ShuffleType.NO_SHUFFLE ? 0 : random.nextInt(MAX_RANDOM_SHUFFLES) + 1;
+        return shuffleChoice == ShuffleType.NO_SHUFFLE ? 0 : random.nextInt(Constants.MAX_RANDOM_SHUFFLES) + 1;
     }
 
     public boolean playSingleGame(Deck deck, int drawCount, ShuffleType shuffleChoice,
                                   int shuffleCount, boolean verbose) {
-        deck.reset();                                           // always start from the file order
+        deck.reset();
         deck.setShuffleStrategy(ShuffleStrategyFactory.create(shuffleChoice));
 
         if (verbose) {
@@ -149,7 +142,7 @@ public class GameManager {
         int moveCount = 0;
         int talonMovesSinceProgress = 0;
 
-        while (!game.isGameOver() && moveCount < MAX_MOVES) {
+        while (!game.isGameOver() && moveCount < Constants.MAX_MOVES) {
             List<Move> moves = moveGenerator.generate(game);
             Move bestMove = moveEvaluator.findBestMove(moves, game);
             if (bestMove == null) break;                        // no useful move
@@ -194,17 +187,17 @@ public class GameManager {
 
         switch (shuffleChoice) {
             case IN_FARO:
-                for (int i = 1; i <= IN_FARO_CYCLE; i++) counts.add(i);
+                for (int i = 1; i <= Constants.IN_FARO_CYCLE; i++) counts.add(i);
                 break;
             case OUT_FARO:
-                for (int i = 1; i <= OUT_FARO_CYCLE; i++) counts.add(i);
+                for (int i = 1; i <= Constants.OUT_FARO_CYCLE; i++) counts.add(i);
                 break;
             case NO_SHUFFLE:
                 counts.add(0);
                 break;
             default:                                            // random shuffle
                 for (int i = 0; i < randomGames; i++) {
-                    counts.add(random.nextInt(MAX_RANDOM_SHUFFLES) + 1);
+                    counts.add(random.nextInt(Constants.MAX_RANDOM_SHUFFLES) + 1);
                 }
                 break;
         }
