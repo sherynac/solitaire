@@ -1,6 +1,7 @@
 package com.svi.solitaire.models.piles;
 
 import com.svi.solitaire.models.Card;
+import com.svi.solitaire.solver.Move;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,12 +20,12 @@ public class Maneuver {
         }
     }
 
-    public Maneuver(List<ManeuverPile> columns){
-        this.columnList = columns;
-    }
-
     public ManeuverPile getColumn(int index) {
         return columnList.get(index);
+    }
+
+    public ManeuverPile getSourceColumn(Move move) {
+        return columnList.get(move.getSource());
     }
 
     public void addCard(int columnIndex, Card card) {

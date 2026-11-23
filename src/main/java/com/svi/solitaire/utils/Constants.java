@@ -9,6 +9,8 @@ public final class Constants {
 
     // ---------------- game setup ----------------
     public static final int MAX_MOVES = 5000;
+    public static final int MIN_GAMES = 1;
+    public static final int MAX_GAMES = 1000;
 
     public static final int IN_FARO_CYCLE = 52;
     public static final int OUT_FARO_CYCLE = 8;

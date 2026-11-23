@@ -7,7 +7,6 @@ import java.util.*;
 
 public class OutFaroShuffle implements ShuffleStrategy {
 
-    //TODO: debug not working
     @Override
     public Deque<Card> shuffle(int shuffleCount, Deque<Card> gameDeck) {
         List<Card> cardList = new ArrayList<>(gameDeck);

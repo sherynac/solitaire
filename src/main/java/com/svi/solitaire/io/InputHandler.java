@@ -1,6 +1,7 @@
 package com.svi.solitaire.io;
 
 import com.svi.solitaire.shuffle.ShuffleType;
+import com.svi.solitaire.utils.Constants;
 
 import java.util.Scanner;
 
@@ -78,18 +79,16 @@ public class InputHandler {
                 1. Single Game
                 2. Check win rate
                 (1/2)>\s""";
-        final int FIRST_CHOICE = 1;
-        final int SECOND_CHOICE = 2;
 
-        simChoice = inputInt(simPrompt, FIRST_CHOICE, SECOND_CHOICE);
+        simChoice = inputInt(simPrompt, 1, 2);
         return simChoice;
     }
 
-    public static int inputNumberOfGames() {
+    public static int inputGameCount() {
         int gameCount;
         String gamePrompt = "Enter number of games to simulate (1-1000): ";
 
-        gameCount = inputInt(gamePrompt, 1, 1000);
+        gameCount = inputInt(gamePrompt, Constants.MIN_GAMES, Constants.MAX_GAMES);
 
         return gameCount;
     }

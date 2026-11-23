@@ -40,10 +40,10 @@ public class GameRunner {
         return game.isGameOver();
     }
 
-    private void prepareDeck(Deck deck, ShuffleType shuffleChoice,  int shuffleCount, boolean verbose) {
+    private void prepareDeck(Deck deck, ShuffleType shuffleChoice, int shuffleCount, boolean toDisplay) {
         deck.reset();
 
-        if (verbose) {
+        if (toDisplay) {
             ConsoleView.printDeck("Displaying initial deck of cards: ", deck);
         }
 
@@ -53,7 +53,7 @@ public class GameRunner {
             deck.shuffleDeck(shuffleCount);
         }
 
-        if (verbose) {
+        if (toDisplay) {
             ConsoleView.printDeck("Displaying shuffled deck of cards: ", deck);
         }
     }
@@ -65,19 +65,23 @@ public class GameRunner {
         while (!game.isGameOver() && moveCount < Constants.MAX_MOVES) {
             List<Move> moves = moveGenerator.generate(game);
             Move bestMove = moveEvaluator.findBestMove(moves, game);
-            if (bestMove == null) {
+
+            if (bestMove == null) { // no found moves
                 break;
             }
 
             moveExecutor.execute(bestMove, game);
             moveCount++;
 
-            if (bestMove.isTalonCycle()) talonMovesSinceProgress++;
-            else talonMovesSinceProgress = 0;
+            if (bestMove.isTalonCycle()) {
+                talonMovesSinceProgress++;
+            } else {
+                talonMovesSinceProgress = 0;
+            }
 
             int cycleLength = game.getTalon().size() + 1;
-            if (talonMovesSinceProgress > cycleLength) {
-                break;   // a full pass with no progress: stuck
+            if (talonMovesSinceProgress > cycleLength) { // checked entire talon and no more move
+                break;
             }
 
             if (toDisplay) {

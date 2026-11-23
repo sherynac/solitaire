@@ -10,22 +10,25 @@ import java.util.List;
 
 /**
  * Scores every legal move and picks the best one. Read-only: it never changes the game.
- *
+ * <p>
  * Priority order (highest first):
- *   1. Safe foundation move (A, 2, or a card no tableau card still needs)
- *   2. Any column move that flips a hidden card (deeper columns first)
- *   3. Any column move that empties a column
- *   4. Talon to column (a king only if something can follow it)
- *   5. Talon to foundation (unsafe)
- *   6. Column to foundation that helps nothing else
- *   7. Draw
- *   8. Restack
- *
+ * 1. Safe foundation move (A, 2, or a card no tableau card still needs)
+ * 2. Any column move that flips a hidden card (deeper columns first)
+ * 3. Any column move that empties a column
+ * 4. Talon to column (a king only if something can follow it)
+ * 5. Talon to foundation (unsafe)
+ * 6. Column to foundation that helps nothing else
+ * 7. Draw
+ * 8. Restack
+ * <p>
  * A score of 0 means "never play this move". Tier gaps are far larger than any bonus,
  * so a bonus can never lift a move into a higher tier.
  */
 public class MoveEvaluator {
-    /** Returns the highest-scoring move, or null when nothing scores above 0. */
+
+    /**
+     * Returns the highest-scoring move, or null when nothing scores above 0.
+     */
     public Move findBestMove(List<Move> moves, Game game) {
         Move best = null;
         int bestScore = 0;                               // moves scoring 0 are never chosen
@@ -35,30 +38,33 @@ public class MoveEvaluator {
                 best = move;
                 bestScore = score;
             }
+            System.out.println(move + " : " + score);
         }
         return best;
     }
 
     public int evaluate(Move move, Game game) {
-        switch (move.getType()) {
-            case TALON_TO_FOUNDATION:
-            case MANEUVER_TO_FOUNDATION: return toFoundationEvaluator(move, game);
-            case TALON_TO_MANEUVER:      return talonToManeuverEvaluator(move, game);
-            case MANEUVER_TO_MANEUVER:   return maneuverToManeuverEvaluator(move, game);
-            case DRAW:                   return Constants.DRAW_SCORE;
-            case RESTACK:                return Constants.RESTACK_SCORE;
-            default: throw new IllegalStateException("Unhandled move type: " + move.getType());
-        }
+        return switch (move.getType()) {
+            case TALON_TO_FOUNDATION, MANEUVER_TO_FOUNDATION -> toFoundationEvaluator(move, game);
+            case TALON_TO_MANEUVER -> talonToManeuverEvaluator(move, game);
+            case MANEUVER_TO_MANEUVER -> maneuverToManeuverEvaluator(move, game);
+            case DRAW -> Constants.DRAW_SCORE;
+            case RESTACK -> Constants.RESTACK_SCORE;
+            default -> throw new IllegalStateException("Unhandled move type: " + move.getType());
+        };
     }
 
     // ---------------- one evaluator per kind of move ----------------
 
     private int toFoundationEvaluator(Move move, Game game) {
-        Card card = movedCard(move, game);
-        if (card == null) return 0;
+        Card card = move.getCard();
+        if (card == null) {
+            return 0;
+        }
 
         // 1. A, 2, or any card nothing in the tableau still needs
         if (isSafeForFoundation(card, game)) {
+            System.out.println("TO FOUNDATION EVALUATOR");
             return Constants.SAFE_FOUNDATION + hiddenCardsUnder(move, game);   // tie-break: dig the deepest column
         }
         // 5. unsafe card from the waste: allowed, but low priority
@@ -69,6 +75,7 @@ public class MoveEvaluator {
         if (revealsHiddenCard(move, game)) {
             return Constants.REVEAL + hiddenCardsUnder(move, game);
         }
+
         if (emptiesColumn(move, game)) {
             return Constants.EMPTY_COLUMN;
         }
@@ -99,21 +106,22 @@ public class MoveEvaluator {
         return score;
     }
 
-    // ---------------- yes/no questions about a move (read-only) ----------------
-
-    /** The card that must fit on the destination: the waste card, or the BASE of a moved run. */
-    private Card movedCard(Move move, Game game) {
-        if (move.getType().isFromTalon()) return game.getTalon().peekWaste();
-        return game.getManeuver().getColumn(move.getSource()).cardFromTop(move.getCardCount() - 1);
-    }
-
-    /** The card left exposed at the destination after the move: the TOP of the moved cards. */
+    /**
+     * The card left exposed at the destination after the move: the TOP of the moved cards.
+     */
     private Card exposedCardAfterMove(Move move, Game game) {
-        if (move.getType().isFromTalon()) return game.getTalon().peekWaste();
-        return game.getManeuver().getColumn(move.getSource()).peekTop();
+        if (move.getType().isFromTalon()) {
+            return game.getTalon().peekWaste();
+        }
+
+        return game.getManeuver()
+                .getColumn(move.getSource())
+                .peekTop();
     }
 
-    /** A and 2 are always safe. Otherwise both opposite-colour foundations must already be at rank - 1. */
+    /**
+     * A and 2 are always safe. Otherwise both opposite-colour foundations must already be at rank - 1.
+     */
     private boolean isSafeForFoundation(Card card, Game game) {
         int rank = card.rank().getValue();
 
@@ -122,6 +130,10 @@ public class MoveEvaluator {
         }
 
         for (Suit suit : Suit.values()) {
+            // those who do not fit the criteria returns false
+            // should be opposite colors
+            // the opposite rank should be >= 1
+            // opp colors && 10 < H-J (10) => true && false => because 10 < 10 so Jack can be placed since 10 is in foundation
             if (suit.isRed() != card.isRed() && game.getFoundation(suit).size() < rank - 1) {
                 return false;
             }
@@ -130,21 +142,33 @@ public class MoveEvaluator {
         return true;
     }
 
-    /** True if the move takes the whole visible run, so a hidden card flips. */
+    /**
+     * True if the move takes the whole visible run, so a hidden card flips.
+     */
     private boolean revealsHiddenCard(Move move, Game game) {
-        if (move.getSource() == Constants.NONE) return false;
-        ManeuverPile source = game.getManeuver().getColumn(move.getSource());
-        return source.hasHiddenCards() && move.getCardCount() == source.visibleCount();
+        if (move.getSource() == Constants.NONE) {
+            return false;
+        }
+
+        ManeuverPile source = game.getManeuver().getSourceColumn(move);
+
+        return source.hasHiddenCards() && move.getCardCount() == source.visibleCount(); // when visible card is moved, hidden is flipped
     }
 
     private int hiddenCardsUnder(Move move, Game game) {
-        if (move.getSource() == Constants.NONE) return 0;
-        return game.getManeuver().getColumn(move.getSource()).hiddenCount();
+        if (move.getSource() == Constants.NONE) {
+            return 0;
+        }
+
+        return game.getManeuver().getSourceColumn(move).hiddenCount();
     }
 
     private boolean emptiesColumn(Move move, Game game) {
-        if (move.getType().isFromTalon()) return false;
-        ManeuverPile source = game.getManeuver().getColumn(move.getSource());
+        if (move.getType().isFromTalon()) {
+            return false;
+        }
+
+        ManeuverPile source = game.getManeuver().getSourceColumn(move);
         return source.size() == move.getCardCount() && !isMoveToEmptyColumn(move, game);
     }
 

@@ -1,21 +1,13 @@
 package com.svi.solitaire.game;
 
-import com.svi.solitaire.shuffle.ShuffleStrategy;
 import com.svi.solitaire.utils.Constants;
 import com.svi.solitaire.shuffle.ShuffleType;
 import com.svi.solitaire.io.ConsoleView;
 import com.svi.solitaire.io.FileHandler;
 import com.svi.solitaire.io.InputHandler;
 import com.svi.solitaire.models.Deck;
-import com.svi.solitaire.models.Game;
-import com.svi.solitaire.shuffle.ShuffleStrategyFactory;
-import com.svi.solitaire.solver.Move;
-import com.svi.solitaire.solver.MoveEvaluator;
-import com.svi.solitaire.solver.MoveExecutor;
-import com.svi.solitaire.solver.MoveGenerator;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -54,7 +46,7 @@ public class GameManager {
                 ConsoleView.printSuccessfulAction(won ? "Game solved!" : "No more moves. Game not solved.");
             } else {
                 int randomGames = shuffleChoice == ShuffleType.RANDOM
-                        ? InputHandler.inputNumberOfGames()
+                        ? InputHandler.inputGameCount()
                         : 0;
 
                 List<Integer> shuffleCounts = simulationRunner.buildShuffleCounts(shuffleChoice, randomGames);

@@ -46,7 +46,7 @@ public class SimulationRunner {
             case NO_SHUFFLE:
                 counts.add(0);
                 break;
-            default:                                            // random shuffle
+            default:
                 for (int i = 0; i < randomGames; i++) {
                     counts.add(random.nextInt(Constants.MAX_RANDOM_SHUFFLES) + 1);
                 }

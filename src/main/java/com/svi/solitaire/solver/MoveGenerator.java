@@ -38,6 +38,7 @@ public class MoveGenerator {
         if (foundation.canAccept(card)) {
             moves.add(new Move(
                     MoveType.TALON_TO_FOUNDATION,
+                    card,
                     Constants.NONE,
                     card.suit().ordinal(),
                     1
@@ -60,6 +61,7 @@ public class MoveGenerator {
             if (destination.canAccept(card)) {
                 moves.add(new Move(
                         MoveType.TALON_TO_MANEUVER,
+                        null,
                         -1,
                         i,
                         1
@@ -85,7 +87,7 @@ public class MoveGenerator {
     private void generateManeuverToFoundation(ManeuverPile source, Game game, int from, List<Move> moves) {
         Card top = source.peekTop();
         if (game.getFoundation(top.suit()).canAccept(top)) {
-            moves.add(new Move(MoveType.MANEUVER_TO_FOUNDATION, from, top.suit().ordinal(), 1));
+            moves.add(new Move(MoveType.MANEUVER_TO_FOUNDATION, top, from, top.suit().ordinal(), 1));
         }
     }
 
@@ -98,14 +100,14 @@ public class MoveGenerator {
                 ManeuverPile destination = maneuver.getColumn(to);
                 if (!destination.canAccept(runBase)) continue;
 
-                moves.add(new Move(MoveType.MANEUVER_TO_MANEUVER, from, to, count));
+                moves.add(new Move(MoveType.MANEUVER_TO_MANEUVER, runBase, from, to, count));
             }
         }
     }
 
     private void addTalonCycleMove(Game game, List<Move> moves) {
         Talon talon = game.getTalon();
-        if (talon.canDraw()) moves.add(new Move(MoveType.DRAW, Constants.NONE, Constants.NONE, 0));
-        else if (talon.canRestack()) moves.add(new Move(MoveType.RESTACK, Constants.NONE, Constants.NONE, 0));
+        if (talon.canDraw()) moves.add(new Move(MoveType.DRAW, null, Constants.NONE, Constants.NONE, 0));
+        else if (talon.canRestack()) moves.add(new Move(MoveType.RESTACK, null, Constants.NONE, Constants.NONE, 0));
     }
 }
