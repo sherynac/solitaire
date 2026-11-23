@@ -24,6 +24,6 @@ public class Waste extends DequePile {
     public String toString() {
         return peekTop(visibleCount).stream()
                 .map(Object::toString)
-                .collect(Collectors.joining(", ", "[", "]"));
+                .collect(Collectors.joining(", ", "[", "] x" + size()));
     }
 }

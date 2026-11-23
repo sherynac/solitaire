@@ -10,9 +10,9 @@ import java.util.IdentityHashMap;
 import java.util.Set;
 
 public class Talon {
-    private int drawCount;
-    private Stock stock;
-    private Waste waste;
+    private final int drawCount;
+    private final Stock stock;
+    private final Waste waste;
 
     public Talon(int drawCount, Stock stock) {
         this.drawCount = drawCount;
@@ -22,7 +22,7 @@ public class Talon {
 
     private final Set<Card> seen = Collections.newSetFromMap(new IdentityHashMap<>());
 
-    public int drawCards() {
+    public void drawCards() {
         int drawn = 0;
         while (drawn < drawCount && !stock.isEmpty()) {
             Card card = stock.removeTop();
@@ -30,7 +30,6 @@ public class Talon {
             waste.add(card);
             drawn++;
         }
-        return drawn;
     }
 
     /**
@@ -39,7 +38,7 @@ public class Talon {
      */
     public List<Card> knownCardsBelowTop() {
         List<Card> known = new ArrayList<>(waste.peekTop(waste.size()));   // bottom to top
-        if (!known.isEmpty()) known.remove(known.size() - 1);              // drop the waste top itself
+        if (!known.isEmpty()) known.removeLast();              // drop the waste top itself
         for (Card card : stock.topFirst()) {                               // next card to draw first
             if (seen.contains(card)) known.add(card);
         }
@@ -50,8 +49,8 @@ public class Talon {
         return waste.peekTop();
     }
 
-    public Card removeFromWaste() {
-        return waste.removeTop();
+    public void removeFromWaste() {
+        waste.removeTop();
     }
 
     public boolean canDraw() {

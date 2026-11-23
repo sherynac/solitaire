@@ -9,7 +9,7 @@ public class ManeuverPile implements Pile {
     private final Deque<Card> hiddenCards;
     private final Deque<Card> visibleCards;
 
-    public ManeuverPile(){
+    public ManeuverPile() {
         hiddenCards = new ArrayDeque<>();
         visibleCards = new ArrayDeque<>();
     }
@@ -25,7 +25,6 @@ public class ManeuverPile implements Pile {
     public boolean hasHiddenCards() {
         return !hiddenCards.isEmpty();
     }
-
 
     public void flipTop() {
         Card card = hiddenCards.peekLast();
@@ -50,7 +49,7 @@ public class ManeuverPile implements Pile {
         visibleCards.add(card);
     }
 
-    public void add (List<Card> cards) {
+    public void add(List<Card> cards) {
         visibleCards.addAll(cards);
     }
 
@@ -71,8 +70,9 @@ public class ManeuverPile implements Pile {
         return (hiddenCards.isEmpty() && visibleCards.isEmpty());
     }
 
-    /** n-th card from the top (0 = top), or null. */
-    /** n-th visible card from the top (0 = top card), or null if there is none. */
+    /**
+     * n-th visible card from the top (0 = top card), or null if there is none.
+     */
     public Card cardFromTop(int n) {
         if (n < 0 || n >= visibleCards.size()) {
             return null;
@@ -82,12 +82,6 @@ public class ManeuverPile implements Pile {
 
         return visibleList.get(visibleCount() - 1 - n);
     }
-
-//    public void addCards(Deque<Card> movingCard) {
-//        for (Card card : movingCard) {
-//            cardDeque.push(card);
-//        }
-//    }
 
     public String getDisplayCardAt(int index) {
         if (index < 0 || index >= size()) {
@@ -115,28 +109,11 @@ public class ManeuverPile implements Pile {
         }
 
         if (visibleCards.isEmpty()) {
-            return card.getRank() == Rank.KING;
+            return card.rank() == Rank.KING;
         }
 
         Card exposedCard = visibleCards.peekLast();
 
         return card.isOneLowerThan(exposedCard);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        stringBuilder.append("HIDDEN DEQUE: ");
-        for (Card card : hiddenCards) {
-            stringBuilder.append(card).append(",");
-        }
-
-        stringBuilder.append("\nVISIBLE DEQUE: ");
-        for (Card card : visibleCards) {
-            stringBuilder.append(card).append(",");
-        }
-
-        return stringBuilder.toString();
     }
 }

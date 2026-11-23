@@ -1,7 +1,8 @@
 package com.svi.solitaire.io;
 
-import com.svi.solitaire.enums.Color;
-import com.svi.solitaire.utils.ColorHelper;
+import com.svi.solitaire.config.Color;
+import com.svi.solitaire.models.Game;
+import com.svi.solitaire.solver.Move;
 
 public class ConsoleView {
 
@@ -15,11 +16,22 @@ public class ConsoleView {
     }
 
     public static void printErrorMessage(String error) {
-        System.out.println(ColorHelper.color(error, Color.RED));
+        System.out.println(Color.RED + error + Color.RESET);
     }
 
     public static void printSuccessfulAction(String action) {
-        System.out.println(ColorHelper.color(action, Color.YELLOW));
+        System.out.println(Color.YELLOW + action + Color.RESET);
     }
 
+    public static void printGameState(Game game, Move move) {
+
+        if (move == null) {
+            System.out.println(Color.BLUE + "\n====================== Initial State ==========================" + Color.RESET);
+        } else {
+            System.out.println(Color.BLUE + "\n====================== " + move + " ==========================" + Color.RESET);
+        }
+
+        System.out.println(game);
+        System.out.println(Color.BLUE + "=========================================================" + Color.RESET);
+    }
 }

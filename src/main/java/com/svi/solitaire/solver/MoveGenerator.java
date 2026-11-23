@@ -34,13 +34,13 @@ public class MoveGenerator {
             return;
         }
 
-        Foundation foundation = game.getFoundation(card.getSuit());
+        Foundation foundation = game.getFoundation(card.suit());
 
         if (foundation.canAccept(card)) {
             moves.add(new Move(
                     MoveType.TALON_TO_FOUNDATION,
                     Constants.NONE,
-                    card.getSuit().ordinal(),
+                    card.suit().ordinal(),
                     1
             ));
         }
@@ -85,8 +85,8 @@ public class MoveGenerator {
 
     private void generateManeuverToFoundation(ManeuverPile source, Game game, int from, List<Move> moves) {
         Card top = source.peekTop();
-        if (game.getFoundation(top.getSuit()).canAccept(top)) {
-            moves.add(new Move(MoveType.MANEUVER_TO_FOUNDATION, from, top.getSuit().ordinal(), 1));
+        if (game.getFoundation(top.suit()).canAccept(top)) {
+            moves.add(new Move(MoveType.MANEUVER_TO_FOUNDATION, from, top.suit().ordinal(), 1));
         }
     }
 

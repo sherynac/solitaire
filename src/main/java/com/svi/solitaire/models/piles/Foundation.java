@@ -11,31 +11,19 @@ public class Foundation extends DequePile {
         this.suit = suit;
     }
 
-    public Suit getSuit() {
-        return suit;
-    }
-
     public boolean canAccept(Card card) {
-        if (card == null || card.getSuit() != suit) {
+        if (card == null || card.suit() != suit) {
             return false;
         }
 
         if (isEmpty()) {
-            return card.getRank() == Rank.ACE;
+            return card.rank() == Rank.ACE;
         }
 
         Card foundationTop = peekTop();
 
-        return card.getRank().getValue() == foundationTop.getRank().getValue() + 1;
+        return card.rank().getValue() == foundationTop.rank().getValue() + 1;
     }
-
-//    public void push(Card card) {
-//        if (!canAccept(card)) {
-//            throw new IllegalArgumentException("Invalid card for foundation");
-//        }
-//
-//        add(card);
-//    }
 
     @Override
     public String toString() {

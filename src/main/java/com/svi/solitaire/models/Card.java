@@ -3,23 +3,9 @@ package com.svi.solitaire.models;
 import com.svi.solitaire.enums.Rank;
 import com.svi.solitaire.enums.Suit;
 
-import java.util.Objects;
-
-public class Card implements Comparable<Card> {
-    private final Rank rank;
-    private final Suit suit;
-
-    public Card(Suit suit, Rank rank)  {
-        this.rank = rank;
-        this.suit = suit;
-    }
-
-    public Rank getRank() {
-        return rank;
-    }
-
-    public Suit getSuit() {
-        return suit;
+public record Card(Rank rank, Suit suit) {
+    public Card(Suit suit, Rank rank) {
+        this(rank, suit);
     }
 
     public boolean isRed() {
@@ -27,25 +13,20 @@ public class Card implements Comparable<Card> {
     }
 
     public boolean isOppositeColor(Card card) {
-        return !suit.isRed() == card.getSuit().isRed();
+        return !suit.isRed() == card.suit().isRed();
     }
 
     public boolean isOneLowerThan(Card other) {
-        return rank.getValue() == other.getRank().getValue() - 1
+        return rank.getValue() == other.rank().getValue() - 1
                 && isOppositeColor(other);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Card other)) return false;
+        if (!(obj instanceof Card(Rank rank1, Suit suit1))) return false;
 
-        return suit == other.suit && rank == other.rank;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(suit, rank);
+        return suit == suit1 && rank == rank1;
     }
 
     @Override
@@ -53,8 +34,4 @@ public class Card implements Comparable<Card> {
         return suit.getSymbol() + "-" + rank.getSymbol();
     }
 
-    @Override
-    public int compareTo(Card o) {
-        return 0;
-    }
 }

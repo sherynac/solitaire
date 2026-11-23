@@ -1,11 +1,9 @@
 package com.svi.solitaire.models;
 
 import com.svi.solitaire.config.Constants;
-import com.svi.solitaire.enums.Color;
 import com.svi.solitaire.enums.Suit;
 import com.svi.solitaire.models.piles.Foundation;
 import com.svi.solitaire.models.piles.ManeuverPile;
-import com.svi.solitaire.utils.ColorHelper;
 
 import java.util.Map;
 
@@ -19,25 +17,6 @@ public class Game {
         this.talon = talon;
         this.foundations = foundations;
         this.maneuver = maneuver;
-    }
-
-    public void displayCurrentState() {
-        System.out.println(ColorHelper.color("\n====================== Move #: ==========================", Color.BLUE));
-
-        System.out.printf("%n%-13s", "StockPile");
-        System.out.printf("%-20s", "Waste");
-        System.out.print("Foundation");
-
-        System.out.printf("%n%-13s", talon.stockString());
-        System.out.printf("%-20s", talon.wasteString());
-
-        for (Map.Entry<Suit, Foundation> entry : foundations.entrySet()) {
-            System.out.print(entry.getValue());
-        }
-
-        System.out.println("\n\n---------------------------------------------------------");
-        System.out.println(maneuver);
-        System.out.println(ColorHelper.color("=========================================================", Color.BLUE));
     }
 
     public Maneuver getManeuver() {
@@ -56,7 +35,7 @@ public class Game {
         Card card = talon.peekWaste();
         if (card == null) throw new IllegalArgumentException("The waste is empty. ");
 
-        foundations.get(card.getSuit()).add(card);
+        foundations.get(card.suit()).add(card);
         talon.removeFromWaste();
     }
 
@@ -73,11 +52,10 @@ public class Game {
         Card card = source.peekTop();
         if (card == null) throw new IllegalStateException("Column " + column + " is empty.");
 
-        foundations.get(card.getSuit()).add(card);
+        foundations.get(card.suit()).add(card);
         source.removeTop();
 
         if (source.hasHiddenCards() && source.hasNoVisibleCards()) {
-            System.out.println("I FLIPPED ");
             source.flipTop();
         }
     }
@@ -98,8 +76,24 @@ public class Game {
         return true;
     }
 
-    public void resetState() {
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
 
+        stringBuilder.append(String.format("%n%-13s", "Stock"));
+        stringBuilder.append(String.format("%-20s", "Waste"));
+        stringBuilder.append("Foundation");
+
+        stringBuilder.append(String.format("%n%-13s", talon.stockString()));
+        stringBuilder.append(String.format("%-20s", talon.wasteString()));
+
+        for (Map.Entry<Suit, Foundation> entry : foundations.entrySet()) {
+            stringBuilder.append(entry.getValue());
+        }
+
+        stringBuilder.append("\n\n---------------------------------------------------------");
+        stringBuilder.append(maneuver);
+
+        return stringBuilder.toString();
     }
-
 }

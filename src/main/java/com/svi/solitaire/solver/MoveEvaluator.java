@@ -115,7 +115,7 @@ public class MoveEvaluator {
 
     /** A and 2 are always safe. Otherwise both opposite-colour foundations must already be at rank - 1. */
     private boolean isSafeForFoundation(Card card, Game game) {
-        int rank = card.getRank().getValue();
+        int rank = card.rank().getValue();
         if (rank <= 2) return true;
         for (Suit suit : Suit.values()) {
             if (suit.isRed() != card.isRed() && game.getFoundation(suit).size() < rank - 1) {

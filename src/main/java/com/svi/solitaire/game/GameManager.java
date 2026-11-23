@@ -133,7 +133,7 @@ public class GameManager {
         }
 
         Game game = GameFactory.create(deck, drawCount);
-        if (verbose) game.displayCurrentState();
+        if (verbose) ConsoleView.printGameState(game, null);
 
         MoveGenerator moveGenerator = new MoveGenerator();
         MoveEvaluator moveEvaluator = new MoveEvaluator();
@@ -156,7 +156,7 @@ public class GameManager {
             int cycleLength = game.getTalon().size() + 1;
             if (talonMovesSinceProgress > cycleLength) break;   // a full pass with no progress: stuck
 
-            if (verbose) game.displayCurrentState();
+            if (verbose) ConsoleView.printGameState(game, bestMove);
         }
         return game.isGameOver();
     }
