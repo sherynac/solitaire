@@ -1,5 +1,6 @@
 package com.svi.solitaire.io;
 
+import com.svi.solitaire.models.Deck;
 import com.svi.solitaire.models.Game;
 import com.svi.solitaire.solver.Move;
 
@@ -22,12 +23,18 @@ public class ConsoleView {
         System.out.println(ConsoleColor.YELLOW + action + ConsoleColor.RESET);
     }
 
-    public static void printGameState(Game game, Move move) {
+    public static void printDeck(String text, Deck deck) {
+        System.out.println(ConsoleColor.YELLOW + text + ConsoleColor.RESET);
+        System.out.println(deck);
+    }
+
+    public static void printGameState(Game game, Move move, int moveCount) {
 
         if (move == null) {
             System.out.println(ConsoleColor.BLUE + "\n====================== Initial State ==========================" + ConsoleColor.RESET);
         } else {
-            System.out.println(ConsoleColor.BLUE + "\n====================== " + move + " ==========================" + ConsoleColor.RESET);
+            System.out.println(ConsoleColor.BLUE + "\n====================== Move " + moveCount + " ==========================" + ConsoleColor.RESET);
+            System.out.println(ConsoleColor.GREEN + "Move: " + move + ConsoleColor.RESET);
         }
 
         System.out.println(game);
