@@ -66,16 +66,6 @@ public class Talon {
         return stock.size() + waste.size();
     }
 
-//    public void drawCards(){
-//        for (int i = 0; i < drawCount; i++) {
-//            if (stock.isEmpty()) {
-//                return;
-//            }
-//            Card drawnCard = stock.removeTop(); // D-A,S-A,D-5,C-2 => D-A
-//            waste.add(drawnCard); // D-A
-//        }
-//    }
-
     public void restack() {
         while (!waste.isEmpty()) {
             Card c = waste.removeTop();

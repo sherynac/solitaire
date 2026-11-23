@@ -22,7 +22,6 @@ public class MoveGenerator {
         return moves;
     }
 
-    // TODO: check if talon can be added to foundation/ to maneuver (half)
     private void addTalonMoves(Game game, List<Move> moves) {
         generateTalonToFoundation(game, moves);
         generateTalonToManeuver(game, moves);
@@ -70,7 +69,6 @@ public class MoveGenerator {
         }
     }
 
-    // TODO: check if card can be added to maneuver/ to foundation (half)
     private void addManeuverMoves(Game game, List<Move> moves) {
         Maneuver maneuver = game.getManeuver();
 
@@ -102,12 +100,10 @@ public class MoveGenerator {
                 if (!destination.canAccept(runBase)) continue;
 
                 moves.add(new Move(MoveType.MANEUVER_TO_MANEUVER, from, to, count));
-                System.out.println("MANEUVER TO MANEUVER: FROM " + from + " TO " + to);
             }
         }
     }
 
-    // TODO: when we need to draw and restack (half)
     private void addTalonCycleMove(Game game, List<Move> moves) {
         Talon talon = game.getTalon();
         if (talon.canDraw()) moves.add(new Move(MoveType.DRAW, Constants.NONE, Constants.NONE, 0));

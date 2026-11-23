@@ -25,40 +25,16 @@ import java.util.List;
  * so a bonus can never lift a move into a higher tier.
  */
 public class MoveEvaluator {
-
-    // ---------------- tiers ----------------
-    private static final int SAFE_FOUNDATION = 1000;
-    private static final int REVEAL = 800;               // + hidden cards under the run
-    private static final int EMPTY_COLUMN = 600;
-    private static final int TALON_TO_COLUMN = 200;
-    private static final int TALON_TO_FOUNDATION = 100;  // unsafe, from the waste
-    private static final int USELESS_FOUNDATION = 20;    // unsafe, from a column, helps nothing else
-    private static final int DRAW_SCORE = 10;
-    private static final int RESTACK_SCORE = 5;
-
-    // ---------------- bonus ----------------
-    private static final int FOLLOW_UP_BONUS = 15;
-
-    private boolean debug = false;
-
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
-
-    // ---------------- selection ----------------
-
     /** Returns the highest-scoring move, or null when nothing scores above 0. */
     public Move findBestMove(List<Move> moves, Game game) {
         Move best = null;
         int bestScore = 0;                               // moves scoring 0 are never chosen
         for (Move move : moves) {
             int score = evaluate(move, game);
-            if (debug) System.out.println(move + ": " + score);
             if (score > bestScore) {                     // on a tie, the first generated move wins
                 best = move;
                 bestScore = score;
             }
-            System.out.println(move + " SCORE: " + score);
         }
         return best;
     }
@@ -69,8 +45,8 @@ public class MoveEvaluator {
             case MANEUVER_TO_FOUNDATION: return toFoundationEvaluator(move, game);
             case TALON_TO_MANEUVER:      return talonToManeuverEvaluator(move, game);
             case MANEUVER_TO_MANEUVER:   return maneuverToManeuverEvaluator(move, game);
-            case DRAW:                   return DRAW_SCORE;
-            case RESTACK:                return RESTACK_SCORE;
+            case DRAW:                   return Constants.DRAW_SCORE;
+            case RESTACK:                return Constants.RESTACK_SCORE;
             default: throw new IllegalStateException("Unhandled move type: " + move.getType());
         }
     }
@@ -83,21 +59,21 @@ public class MoveEvaluator {
 
         // 1. A, 2, or any card nothing in the tableau still needs
         if (isSafeForFoundation(card, game)) {
-            return SAFE_FOUNDATION + hiddenCardsUnder(move, game);   // tie-break: dig the deepest column
+            return Constants.SAFE_FOUNDATION + hiddenCardsUnder(move, game);   // tie-break: dig the deepest column
         }
         // 5. unsafe card from the waste: allowed, but low priority
         if (move.getType().isFromTalon()) {
-            return TALON_TO_FOUNDATION;
+            return Constants.TALON_TO_FOUNDATION;
         }
         // 2 and 3. unsafe card from a column, but it flips a card or empties the column
         if (revealsHiddenCard(move, game)) {
-            return REVEAL + hiddenCardsUnder(move, game);
+            return Constants.REVEAL + hiddenCardsUnder(move, game);
         }
         if (emptiesColumn(move, game)) {
-            return EMPTY_COLUMN;
+            return Constants.EMPTY_COLUMN;
         }
         // 6. nothing else to gain
-        return USELESS_FOUNDATION;
+        return Constants.USELESS_FOUNDATION;
     }
 
     private int talonToManeuverEvaluator(Move move, Game game) {
@@ -107,24 +83,17 @@ public class MoveEvaluator {
         if (isMoveToEmptyColumn(move, game) && !followUp) {
             return 0;
         }
-        return TALON_TO_COLUMN + (followUp ? FOLLOW_UP_BONUS : 0);
+        return Constants.TALON_TO_COLUMN + (followUp ? Constants.FOLLOW_UP_BONUS : 0);
     }
 
     private int maneuverToManeuverEvaluator(Move move, Game game) {
         boolean reveals = revealsHiddenCard(move, game);
         boolean empties = emptiesColumn(move, game);
 
-        ManeuverPile src = game.getManeuver().getColumn(move.getSource());
-        System.out.println(move
-                + " | empties=" + emptiesColumn(move, game)
-                + " | srcSize=" + src.size()
-                + " | count=" + move.getCardCount()
-                + " | destEmpty=" + isMoveToEmptyColumn(move, game));
-
         if (!reveals && !empties) return 0;              // never shuffle cards for nothing
 
-        int score = reveals ? REVEAL + hiddenCardsUnder(move, game) : EMPTY_COLUMN;
-        if (hasFollowUp(move, game)) score += FOLLOW_UP_BONUS;
+        int score = reveals ? Constants.REVEAL + hiddenCardsUnder(move, game) : Constants.EMPTY_COLUMN;
+        if (hasFollowUp(move, game)) score += Constants.FOLLOW_UP_BONUS;
 
 
         return score;
