@@ -47,7 +47,7 @@ public class InputHandler {
         int shuffleChoice;
         final int IN_FARO_SHUFFLE_CHOICE = 1;
         final int OUT_FARO_SHUFFLE_CHOICE = 2;
-        final int RANDOM_SHUFFLE_CHOICE =3;
+        final int RANDOM_SHUFFLE_CHOICE = 3;
         final int NO_SHUFFLE_CHOICE = 4;
 
         String shufflePrompt = """
@@ -68,7 +68,6 @@ public class InputHandler {
             case NO_SHUFFLE_CHOICE -> ShuffleType.NO_SHUFFLE;
             default -> throw new NullPointerException("Shuffle Choice does not exist");
         };
-
     }
 
     public static int inputSimulationChoice() {
@@ -77,35 +76,29 @@ public class InputHandler {
                 
                 How do you want to simulate?
                 1. Single Game
-                2. Check win rate (100 games)
+                2. Check win rate
                 (1/2)>\s""";
         final int FIRST_CHOICE = 1;
         final int SECOND_CHOICE = 2;
 
-        simChoice = inputInt(simPrompt, FIRST_CHOICE,SECOND_CHOICE);
+        simChoice = inputInt(simPrompt, FIRST_CHOICE, SECOND_CHOICE);
         return simChoice;
     }
 
     public static int inputNumberOfGames() {
+        int gameCount;
+        String gamePrompt = "Enter number of games to simulate (1-1000): ";
 
-        while (true) {
-            System.out.print("Enter number of games to simulate: ");
-            String line = scanner.nextLine().trim();
-            try {
-                int games = Integer.parseInt(line);
-                if (games > 0) return games;
-            } catch (NumberFormatException ignored) {
-                // fall through to the message below
-            }
-            System.out.println("Please enter a whole number greater than 0.");
-        }
+        gameCount = inputInt(gamePrompt, 1, 1000);
+
+        return gameCount;
     }
 
     public static boolean playAgain() {
         while (true) {
-            System.out.print("\nDo you want to play again? (y/n): ");
+            ConsoleView.printPrompt("\nDo you want to play again? (y/n): ");
             String input = scanner.nextLine();
-            if (input.equalsIgnoreCase("y")){
+            if (input.equalsIgnoreCase("y")) {
                 return true;
             } else if (input.equalsIgnoreCase("n")) {
                 return false;
