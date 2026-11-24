@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
-
 public class GameManager {
     private final Random random;
     private final GameRunner gameRunner;
@@ -29,37 +28,27 @@ public class GameManager {
         ConsoleView.printWelcome();
 
         Deck deck = loadDeckWithRetry();
-        ConsoleView.printSuccessfulAction("Game has successfully read list of cards.");
+        ConsoleView.printAction("Game has successfully read list of cards.");
 
         while (willPlayAgain) {
             int drawCount = InputHandler.inputDrawCount();
-            ConsoleView.printSuccessfulAction("Game is set to draw " + drawCount + " from talon.");
+            ConsoleView.printAction("Game is set to draw " + drawCount + " from talon.");
 
             ShuffleType shuffleChoice = InputHandler.inputShuffleChoice();
-            ConsoleView.printSuccessfulAction("Game is set to " + shuffleChoice.getLabel() + ".");
+            ConsoleView.printAction("Game is set to " + shuffleChoice.getLabel() + ".");
 
             int simulationChoice = InputHandler.inputSimulationChoice();
 
             if (simulationChoice == 1) {
-                int shuffleCount = pickShuffleCount(shuffleChoice);
-                boolean won = gameRunner.playSingleGame(deck, drawCount, shuffleChoice, shuffleCount, true);
-                ConsoleView.printSuccessfulAction(won ? "Game solved!" : "No more moves. Game not solved.");
+                playSingleGame(shuffleChoice, deck, drawCount);
             } else {
-                int randomGames = shuffleChoice == ShuffleType.RANDOM
-                        ? InputHandler.inputGameCount()
-                        : 0;
-
-                List<Integer> shuffleCounts = simulationRunner.buildShuffleCounts(shuffleChoice, randomGames);
-                int gamesPlayed = shuffleCounts.size();
-                int wins = simulationRunner.testWins(deck, drawCount, shuffleChoice, shuffleCounts);
-                double winRate = simulationRunner.computeWinRate(wins, gamesPlayed);
-
-                ConsoleView.printSuccessfulAction(
-                        String.format("Won %d of %d games (%.1f%%)", wins, gamesPlayed, winRate));
+                simulateGame(shuffleChoice, deck, drawCount);
             }
 
             willPlayAgain = InputHandler.playAgain();
         }
+
+        ConsoleView.printGoodbye();
     }
 
     private Deck loadDeckWithRetry() {
@@ -83,5 +72,27 @@ public class GameManager {
      */
     private int pickShuffleCount(ShuffleType shuffleChoice) {
         return shuffleChoice == ShuffleType.NO_SHUFFLE ? 0 : random.nextInt(Constants.MAX_RANDOM_SHUFFLES) + 1;
+    }
+
+    private void playSingleGame(ShuffleType shuffleChoice, Deck deck, int drawCount) {
+        int shuffleCount = pickShuffleCount(shuffleChoice);
+        boolean won = gameRunner.playSingleGame(deck, drawCount, shuffleChoice, shuffleCount, true);
+        ConsoleView.printAction(won ? "\n!! Congratulations, Game was solved !!" : "\n!! No more moves. Game not solved. !!");
+    }
+
+    private void simulateGame(ShuffleType shuffleChoice, Deck deck, int drawCount) {
+        int randomGames = shuffleChoice == ShuffleType.RANDOM
+                ? InputHandler.inputGameCount() : 0;
+
+        List<Integer> shuffleCounts = simulationRunner.buildShuffleCounts(shuffleChoice, randomGames);
+        int gamesPlayed = shuffleCounts.size();
+
+        ConsoleView.printAction("\nRunning " + gamesPlayed + " games to determine win rate...");
+
+        int wins = simulationRunner.testWins(deck, drawCount, shuffleChoice, shuffleCounts);
+        double winRate = simulationRunner.computeWinRate(wins, gamesPlayed);
+
+        ConsoleView.printAction(
+                String.format("\n!! Won %d of %d games (%.1f%%) !!", wins, gamesPlayed, winRate));
     }
 }
