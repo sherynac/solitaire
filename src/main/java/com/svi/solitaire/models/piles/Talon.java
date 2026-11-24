@@ -29,6 +29,21 @@ public class Talon {
         return new Talon(drawCount, stock.copy(), waste.copy(), seen);
     }
 
+    public int size() {
+        return stock.size() + waste.size();
+    }
+
+    public Card peekWaste() {
+        return waste.peekTop();
+    }
+
+    public boolean canDraw() {
+        return !stock.isEmpty();
+    }
+
+    public boolean canRestack() {
+        return stock.isEmpty() && waste.size() > 1;
+    }
 
     public void drawCards() {
         int drawn = 0;
@@ -40,6 +55,17 @@ public class Talon {
         }
     }
 
+    public void removeFromWaste() {
+        waste.removeTop();
+    }
+
+    public void restack() {
+        while (!waste.isEmpty()) {
+            Card c = waste.removeTop();
+            stock.add(c);
+        }
+    }
+
     /**
      * Cards the player has already seen that sit under the waste top or are still in the stock,
      * in draw order. Stock cards that were never flipped are not included.
@@ -48,37 +74,11 @@ public class Talon {
         List<Card> known = new ArrayList<>(waste.peekTop(waste.size()));   // bottom to top
         if (!known.isEmpty()) known.removeLast();              // drop the waste top itself
         for (Card card : stock.topFirst()) {                               // next card to draw first
-            if (seen.contains(card)) known.add(card);
+            if (seen.contains(card)) {
+                known.add(card);
+            }
         }
         return known;
-    }
-
-    public Card peekWaste() {
-        return waste.peekTop();
-    }
-
-    public void removeFromWaste() {
-        waste.removeTop();
-    }
-
-    public boolean canDraw() {
-        System.out.println("CAN WE DRAW?: " + !stock.isEmpty());
-        return !stock.isEmpty();
-    }
-
-    public boolean canRestack() {
-        return stock.isEmpty() && waste.size() > 1;
-    }
-
-    public int size() {
-        return stock.size() + waste.size();
-    }
-
-    public void restack() {
-        while (!waste.isEmpty()) {
-            Card c = waste.removeTop();
-            stock.add(c);
-        }
     }
 
     public String wasteString() {

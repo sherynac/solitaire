@@ -47,7 +47,7 @@ public class FileHandler {
 
         String[] parts = cardString.split("-");
 
-        if (parts.length != Constants.NUM_CARD_PARTS) {
+        if (parts.length != Constants.CARD_PARTS) {
             throw new IllegalArgumentException("Incorrect Card Format: " + cardString);
         }
 

@@ -2,8 +2,7 @@ package com.svi.solitaire.models.piles;
 
 import com.svi.solitaire.models.Card;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.*;
 
 public class Stock extends DequePile {
 
@@ -15,14 +14,20 @@ public class Stock extends DequePile {
         super(cardDeque);
     }
 
-    @Override
-    public String toString() {
-        return "[???] x" + size();
-    }
-
     public Stock copy() {
         Deque<Card> cardDeque = new ArrayDeque<>(snapshot());
         return new Stock(cardDeque);
+    }
+
+    public List<Card> topFirst() {
+        List<Card> list = snapshot();
+        Collections.reverse(list);
+        return list;
+    }
+
+    @Override
+    public String toString() {
+        return "[???] x" + size();
     }
 
 }
