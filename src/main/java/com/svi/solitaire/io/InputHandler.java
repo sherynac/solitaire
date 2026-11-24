@@ -24,9 +24,8 @@ public class InputHandler {
     }
 
     public static int inputDrawCount() {
-        int drawChoice;
-        final int MINIMUM_DRAW = 1;
-        final int MAXIMUM_DRAW = 3;
+        int drawCount;
+
         String drawPrompt = """
                 
                 How many draws from talon?
@@ -34,14 +33,19 @@ public class InputHandler {
                 3 = Draw Three
                 (1/3)>\s""";
 
-        drawChoice = inputInt(drawPrompt, MINIMUM_DRAW, MAXIMUM_DRAW);
-
-        while (drawChoice != 1 && drawChoice != 3) {
-            ConsoleView.printErrorMessage("Invalid choice. Please enter 1 or 3.");
-            drawChoice = inputInt(drawPrompt, MINIMUM_DRAW, MAXIMUM_DRAW);
+        while (true) {
+            try {
+                ConsoleView.printPrompt(drawPrompt);
+                drawCount = Integer.parseInt(scanner.nextLine().trim());
+                if (drawCount != 1 && drawCount != 3) {
+                    ConsoleView.printErrorMessage("Invalid choice. Please enter 1 or 3.");
+                } else {
+                    return drawCount;
+                }
+            } catch (NumberFormatException nfe) {
+                ConsoleView.printErrorMessage("Make sure to enter a number. Kindly re-enter a value.");
+            }
         }
-
-        return drawChoice;
     }
 
     public static ShuffleType inputShuffleChoice() {
@@ -118,8 +122,7 @@ public class InputHandler {
                     return input;
                 }
             } catch (NumberFormatException nfe) {
-                ConsoleView.printErrorMessage("Make sure to enter a number.");
-                ConsoleView.printErrorMessage("Kindly re-enter a value.");
+                ConsoleView.printErrorMessage("Make sure to enter a number. Kindly re-enter a value.");
             }
         }
     }
