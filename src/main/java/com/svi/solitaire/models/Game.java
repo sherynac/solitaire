@@ -11,9 +11,9 @@ import java.util.Map;
 
 
 public class Game {
-    private Maneuver maneuver;
-    private Talon talon;
-    private Map<Suit, Foundation> foundations;
+    private final Maneuver maneuver;
+    private final Talon talon;
+    private final Map<Suit, Foundation> foundations;
 
     public Game(Talon talon, Map<Suit, Foundation> foundations, Maneuver maneuver) {
         this.talon = talon;

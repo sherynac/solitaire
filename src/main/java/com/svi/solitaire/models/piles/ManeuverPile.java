@@ -19,46 +19,13 @@ public class ManeuverPile implements Pile {
         this.visibleCards = new ArrayDeque<>(visibleCards);
     }
 
-    public void addHidden(Card card) {
-        hiddenCards.addLast(card);
-    }
-
-    public boolean hasNoVisibleCards() {
-        return visibleCards.isEmpty();
-    }
-
-    public boolean hasHiddenCards() {
-        return !hiddenCards.isEmpty();
-    }
-
-    public void flipTop() {
-        Card card = hiddenCards.peekLast();
-        hiddenCards.removeLast();
-        visibleCards.addFirst(card);
+    public ManeuverPile copy() {
+        return new ManeuverPile(hiddenCards, visibleCards);
     }
 
     @Override
     public int size() {
         return hiddenCards.size() + visibleCards.size();
-    }
-
-    @Override
-    public Card peekTop() {
-        return visibleCards.peekLast();
-    }
-
-    @Override
-    public void add(Card card) {
-        visibleCards.add(card);
-    }
-
-    public void add(List<Card> cards) {
-        visibleCards.addAll(cards);
-    }
-
-    @Override
-    public Card removeTop() {
-        return visibleCards.removeLast();
     }
 
     public int visibleCount() {
@@ -73,6 +40,43 @@ public class ManeuverPile implements Pile {
         return (hiddenCards.isEmpty() && visibleCards.isEmpty());
     }
 
+    @Override
+    public Card peekTop() {
+        return visibleCards.peekLast();
+    }
+
+    public boolean hasNoVisibleCards() {
+        return visibleCards.isEmpty();
+    }
+
+    public boolean hasHiddenCards() {
+        return !hiddenCards.isEmpty();
+    }
+
+    @Override
+    public void add(Card card) {
+        visibleCards.add(card);
+    }
+
+    public void add(List<Card> cards) {
+        visibleCards.addAll(cards);
+    }
+
+    public void addHidden(Card card) {
+        hiddenCards.addLast(card);
+    }
+
+    @Override
+    public Card removeTop() {
+        return visibleCards.removeLast();
+    }
+
+    public void flipTop() {
+        Card card = hiddenCards.peekLast();
+        hiddenCards.removeLast();
+        visibleCards.addFirst(card);
+    }
+
     /**
      * n-th visible card from the top (0 = top card), or null if there is none.
      */
@@ -80,10 +84,11 @@ public class ManeuverPile implements Pile {
         if (n < 0 || n >= visibleCards.size()) {
             return null;
         }
-
-        List<Card> visibleList = new ArrayList<>(visibleCards);
-
-        return visibleList.get(visibleCount() - 1 - n);
+        Iterator<Card> it = visibleCards.descendingIterator();
+        for (int i = 0; i < n; i++) {
+            it.next();
+        }
+        return it.next();
     }
 
     public String getDisplayCardAt(int index) {
@@ -104,10 +109,6 @@ public class ManeuverPile implements Pile {
         }
 
         return iterator.next().toString();
-    }
-
-    public ManeuverPile copy() {
-        return new ManeuverPile(hiddenCards, visibleCards);
     }
 
     public boolean canAccept(Card card) {

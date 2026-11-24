@@ -3,6 +3,7 @@ package com.svi.solitaire.shuffle;
 import com.svi.solitaire.shuffle.strategies.InFaroShuffle;
 import com.svi.solitaire.shuffle.strategies.OutFaroShuffle;
 import com.svi.solitaire.shuffle.strategies.RandomShuffle;
+import com.svi.solitaire.shuffle.strategies.ShuffleStrategy;
 
 public class ShuffleStrategyFactory {
 

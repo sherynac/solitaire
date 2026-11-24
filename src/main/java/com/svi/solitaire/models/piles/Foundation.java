@@ -19,6 +19,10 @@ public class Foundation extends DequePile {
         super(cardDeque);
     }
 
+    public Foundation copy() {
+        Deque<Card> cardDeque = new ArrayDeque<>(snapshot());
+        return new Foundation(suit, cardDeque);
+    }
 
     public boolean canAccept(Card card) {
         if (card == null || card.suit() != suit) {
@@ -32,11 +36,6 @@ public class Foundation extends DequePile {
         Card foundationTop = peekTop();
 
         return card.rank().getValue() == foundationTop.rank().getValue() + 1;
-    }
-
-    public Foundation copy() {
-        Deque<Card> cardDeque = new ArrayDeque<>(snapshot());
-        return new Foundation(suit, cardDeque);
     }
 
     @Override

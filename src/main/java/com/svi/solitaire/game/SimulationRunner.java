@@ -38,16 +38,23 @@ public class SimulationRunner {
 
         switch (shuffleChoice) {
             case IN_FARO:
-                for (int i = 1; i <= Constants.IN_FARO_CYCLE; i++) counts.add(i);
+                for (int count = 1; count <= Constants.IN_FARO_CYCLE; count++) {
+                    counts.add(count);
+                }
                 break;
+
             case OUT_FARO:
-                for (int i = 1; i <= Constants.OUT_FARO_CYCLE; i++) counts.add(i);
+                for (int count = 1; count <= Constants.OUT_FARO_CYCLE; count++) {
+                    counts.add(count);
+                }
                 break;
+
             case NO_SHUFFLE:
                 counts.add(0);
                 break;
+
             default:
-                for (int i = 0; i < randomGames; i++) {
+                for (int count = 0; count < randomGames; count++) {
                     counts.add(random.nextInt(Constants.MAX_RANDOM_SHUFFLES) + 1);
                 }
                 break;

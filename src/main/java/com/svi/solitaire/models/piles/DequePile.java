@@ -10,7 +10,7 @@ import java.util.Collections;
 
 public class DequePile implements Pile {
 
-    private Deque<Card> cards;
+    private final Deque<Card> cards;
 
     public DequePile() {
         this.cards = new ArrayDeque<>();
@@ -45,14 +45,7 @@ public class DequePile implements Pile {
         return cards.removeLast();
     }
 
-    public List<Card> topFirst() {
-        List<Card> list = new ArrayList<>(cards);   // bottom to top
-        Collections.reverse(list);
-        return list;
-    }
-
-    // DequePile
-    protected List<Card> snapshot() {              // bottom to top
+    protected List<Card>   snapshot() {              // bottom to top
         return new ArrayList<>(cards);
     }
 }

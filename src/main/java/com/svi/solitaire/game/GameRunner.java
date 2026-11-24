@@ -3,7 +3,7 @@ package com.svi.solitaire.game;
 import com.svi.solitaire.io.ConsoleView;
 import com.svi.solitaire.models.Deck;
 import com.svi.solitaire.models.Game;
-import com.svi.solitaire.shuffle.ShuffleStrategy;
+import com.svi.solitaire.shuffle.strategies.ShuffleStrategy;
 import com.svi.solitaire.shuffle.ShuffleStrategyFactory;
 import com.svi.solitaire.shuffle.ShuffleType;
 import com.svi.solitaire.solver.Move;
@@ -80,7 +80,7 @@ public class GameRunner {
             }
 
             int cycleLength = game.getTalon().size() + 1;
-            if (talonMovesSinceProgress > cycleLength) { // checked entire talon and no more move
+            if (talonMovesSinceProgress > cycleLength) {
                 break;
             }
 

@@ -1,8 +1,5 @@
 package com.svi.solitaire.solver;
 
-import com.svi.solitaire.enums.Rank;
-import com.svi.solitaire.enums.Suit;
-import com.svi.solitaire.io.ConsoleView;
 import com.svi.solitaire.models.piles.Maneuver;
 import com.svi.solitaire.models.piles.Talon;
 import com.svi.solitaire.utils.Constants;
@@ -113,8 +110,7 @@ public class MoveGenerator {
 
         if (talon.canDraw()) {
             moves.add(new Move(MoveType.DRAW, null, Constants.NONE, Constants.NONE, 0));
-        }
-        else if (talon.canRestack()) {
+        } else if (talon.canRestack()) {
             moves.add(new Move(MoveType.RESTACK, null, Constants.NONE, Constants.NONE, 0));
         }
     }

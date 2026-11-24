@@ -1,6 +1,6 @@
 package com.svi.solitaire.models;
 
-import com.svi.solitaire.shuffle.ShuffleStrategy;
+import com.svi.solitaire.shuffle.strategies.ShuffleStrategy;
 
 import java.util.*;
 
@@ -14,22 +14,24 @@ public class Deck {
         gameDeck = new ArrayDeque<>(originalDeck);
     }
 
-    public void addCard(Card card) {
-        originalDeck.addLast(card);
-    }
-
-    public Card removeFirst() {
-        return gameDeck.pop();
-    }
-
-    public Card removeLast() {return gameDeck.removeLast();}
-
-    public boolean hasNext() {
-        return gameDeck.iterator().hasNext();
+    public void setShuffleStrategy(ShuffleStrategy shuffleStrategy) {
+        this.shuffleStrategy = shuffleStrategy;
     }
 
     public int size() {
         return originalDeck.size();
+    }
+
+    public Card removeFirst() {
+        return gameDeck.removeFirst();
+    }
+
+    public Card removeLast() {
+        return gameDeck.removeLast();
+    }
+
+    public boolean hasNext() {
+        return gameDeck.iterator().hasNext();
     }
 
     public void shuffleDeck(int shuffleCount) {
@@ -38,9 +40,6 @@ public class Deck {
         gameDeck.addAll(shuffled);
     }
 
-    public void setShuffleStrategy(ShuffleStrategy shuffleStrategy) {
-        this.shuffleStrategy = shuffleStrategy;
-    }
 
     public void reset() {
         gameDeck.clear();

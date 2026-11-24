@@ -28,12 +28,12 @@ public class Maneuver {
         }
     }
 
-    public ManeuverPile getColumn(int index) {
-        return columnList.get(index);
+    public Maneuver copy() {
+        return new Maneuver(columnList);
     }
 
-    public ManeuverPile getSourceColumn(Move move) {
-        return columnList.get(move.getSource());
+    public ManeuverPile getColumn(int index) {
+        return columnList.get(index);
     }
 
     public void addCard(int columnIndex, Card card) {
@@ -44,27 +44,23 @@ public class Maneuver {
         columnList.get(columnIndex).add(card);
     }
 
-    public void moveCards(int from, int to, int cardCount) {
-        ManeuverPile fromPile = getColumn(from);
-        ManeuverPile toPile = getColumn(to);
+    public void moveCards(int source, int destination, int cardCount) {
+        ManeuverPile sourcePile = getColumn(source);
+        ManeuverPile destPile = getColumn(destination);
 
         List<Card> cardsToMove = new ArrayList<>();
 
         for (int counter = 0; counter < cardCount; counter++) {
-            cardsToMove.add(fromPile.removeTop());   // top first
+            cardsToMove.add(sourcePile.removeTop());   // top first
         }
 
         Collections.reverse(cardsToMove);            // now bottom to top: C-9, D-8, S-7
 
-        toPile.add(cardsToMove);
+        destPile.add(cardsToMove);
 
-        if (fromPile.hasNoVisibleCards() && !fromPile.isEmpty()) {
-            fromPile.flipTop();
+        if (sourcePile.hasNoVisibleCards() && !sourcePile.isEmpty()) {
+            sourcePile.flipTop();
         }
-    }
-
-    public Maneuver copy() {
-        return new Maneuver(columnList);
     }
 
     @Override
