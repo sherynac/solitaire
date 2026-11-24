@@ -62,6 +62,11 @@ public class MoveEvaluator {
             return 0;
         }
 
+        if (move.getType() == MoveType.TALON_TO_FOUNDATION) {
+            System.out.println("CONTENT OF FOUNDATION: ");
+
+        }
+
         // 1. A, 2, or any card nothing in the tableau still needs
         if (isSafeForFoundation(card, game)) {
             System.out.println("TO FOUNDATION EVALUATOR");

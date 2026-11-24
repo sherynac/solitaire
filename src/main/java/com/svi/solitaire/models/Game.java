@@ -22,20 +22,22 @@ public class Game {
     }
 
     public Maneuver getManeuver() {
-        return maneuver;
+        return maneuver.copy();
     }
 
     public Talon getTalon() {
-        return talon;
+        return talon.copy();
     }
 
     public Foundation getFoundation(Suit suit) {
-        return foundations.get(suit);
+        return foundations.get(suit).copy();
     }
 
     public void moveWasteToFoundation() {
         Card card = talon.peekWaste();
-        if (card == null) throw new IllegalArgumentException("The waste is empty. ");
+        if (card == null) {
+            throw new IllegalArgumentException("The waste is empty. ");
+        }
 
         foundations.get(card.suit()).add(card);
         talon.removeFromWaste();
@@ -43,7 +45,9 @@ public class Game {
 
     public void moveWasteToColumn(int column) {
         Card card = talon.peekWaste();
-        if (card == null) throw new IllegalStateException("The waste is empty.");
+        if (card == null) {
+            throw new IllegalStateException("The waste is empty.");
+        }
 
         maneuver.getColumn(column).add(card);
         talon.removeFromWaste();
@@ -52,7 +56,10 @@ public class Game {
     public void moveManeuverToFoundation(int column) {
         ManeuverPile source = maneuver.getColumn(column);
         Card card = source.peekTop();
-        if (card == null) throw new IllegalStateException("Column " + column + " is empty.");
+
+        if (card == null) {
+            throw new IllegalStateException("Column " + column + " is empty.");
+        }
 
         foundations.get(card.suit()).add(card);
         source.removeTop();
@@ -66,8 +73,13 @@ public class Game {
         maneuver.moveCards(from, to, count);
     }
 
-    public void drawTalon()    { talon.drawCards(); }
-    public void restackTalon() { talon.restack(); }
+    public void drawTalon() {
+        talon.drawCards();
+    }
+
+    public void restackTalon() {
+        talon.restack();
+    }
 
     public boolean isGameOver() {
         for (Map.Entry<Suit, Foundation> foundation : foundations.entrySet()) {

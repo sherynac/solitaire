@@ -9,5 +9,4 @@ public interface Pile {
     Card peekTop();
     void add(Card card);
     Card removeTop();
-
 }

@@ -4,12 +4,21 @@ import com.svi.solitaire.enums.Rank;
 import com.svi.solitaire.enums.Suit;
 import com.svi.solitaire.models.Card;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class Foundation extends DequePile {
     private Suit suit;
 
     public Foundation(Suit suit) {
         this.suit = suit;
     }
+
+    public Foundation(Suit suit, Deque<Card> cardDeque) {
+        this.suit = suit;
+        super(cardDeque);
+    }
+
 
     public boolean canAccept(Card card) {
         if (card == null || card.suit() != suit) {
@@ -23,6 +32,11 @@ public class Foundation extends DequePile {
         Card foundationTop = peekTop();
 
         return card.rank().getValue() == foundationTop.rank().getValue() + 1;
+    }
+
+    public Foundation copy() {
+        Deque<Card> cardDeque = new ArrayDeque<>(snapshot());
+        return new Foundation(suit, cardDeque);
     }
 
     @Override

@@ -14,6 +14,11 @@ public class ManeuverPile implements Pile {
         visibleCards = new ArrayDeque<>();
     }
 
+    public ManeuverPile(Deque<Card> hiddenCards, Deque<Card> visibleCards) {
+        this.hiddenCards = new ArrayDeque<>(hiddenCards);
+        this.visibleCards = new ArrayDeque<>(visibleCards);
+    }
+
     public void addHidden(Card card) {
         hiddenCards.addLast(card);
     }
@@ -99,6 +104,10 @@ public class ManeuverPile implements Pile {
         }
 
         return iterator.next().toString();
+    }
+
+    public ManeuverPile copy() {
+        return new ManeuverPile(hiddenCards, visibleCards);
     }
 
     public boolean canAccept(Card card) {

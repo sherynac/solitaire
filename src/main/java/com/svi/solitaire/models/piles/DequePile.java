@@ -10,7 +10,15 @@ import java.util.Collections;
 
 public class DequePile implements Pile {
 
-    private Deque<Card> cards = new ArrayDeque<>();
+    private Deque<Card> cards;
+
+    public DequePile() {
+        this.cards = new ArrayDeque<>();
+    }
+
+    public DequePile(Deque<Card> cards) {
+        this.cards = new ArrayDeque<>(cards);
+    }
 
     @Override
     public boolean isEmpty() {

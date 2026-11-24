@@ -2,6 +2,8 @@ package com.svi.solitaire.models.piles;
 
 import com.svi.solitaire.models.Card;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.stream.Collectors;
 import java.util.List;
 
@@ -10,6 +12,16 @@ public class Waste extends DequePile {
 
     public Waste(int visibleCount) {
         this.visibleCount = visibleCount;
+    }
+
+    public Waste(int visibleCount, Deque<Card> cardDeque) {
+        this.visibleCount = visibleCount;
+        super(cardDeque);
+    }
+
+    public Waste copy() {
+        Deque<Card> cardDeque = new ArrayDeque<>(snapshot());
+        return new Waste(visibleCount, cardDeque);
     }
 
     public List<Card> peekTop(int n) {

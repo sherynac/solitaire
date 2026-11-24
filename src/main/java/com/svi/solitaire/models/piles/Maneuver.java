@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Maneuver {
 
-    private List<ManeuverPile> columnList;
+    private final List<ManeuverPile> columnList;
 
     public Maneuver(){
         columnList = new ArrayList<>();
@@ -17,6 +17,14 @@ public class Maneuver {
         for (int i = 0 ; i < 7; i++){
             ManeuverPile tableauColumn = new ManeuverPile();
             columnList.add(tableauColumn);
+        }
+    }
+
+    public Maneuver(List<ManeuverPile> columnList) {
+        this.columnList = new ArrayList<>();
+
+        for (ManeuverPile col : columnList) {
+            this.columnList.add(col.copy());
         }
     }
 
@@ -53,6 +61,10 @@ public class Maneuver {
         if (fromPile.hasNoVisibleCards() && !fromPile.isEmpty()) {
             fromPile.flipTop();
         }
+    }
+
+    public Maneuver copy() {
+        return new Maneuver(columnList);
     }
 
     @Override

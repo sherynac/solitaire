@@ -8,14 +8,27 @@ public class Talon {
     private final int drawCount;
     private final Stock stock;
     private final Waste waste;
+    private final Set<Card> seen;
 
     public Talon(int drawCount, Stock stock) {
         this.drawCount = drawCount;
         this.stock = stock;
         waste = new Waste(drawCount);
+        this.seen = Collections.newSetFromMap(new IdentityHashMap<>());
     }
 
-    private final Set<Card> seen = Collections.newSetFromMap(new IdentityHashMap<>());
+    public Talon(int drawCount, Stock stock, Waste waste, Set<Card> seen) {
+        this.drawCount = drawCount;
+        this.stock = stock;
+        this.waste = waste;
+        this.seen = Collections.newSetFromMap(new IdentityHashMap<>());
+        this.seen.addAll(seen);
+    }
+
+    public Talon copy() {
+        return new Talon(drawCount, stock.copy(), waste.copy(), seen);
+    }
+
 
     public void drawCards() {
         int drawn = 0;
@@ -49,6 +62,7 @@ public class Talon {
     }
 
     public boolean canDraw() {
+        System.out.println("CAN WE DRAW?: " + !stock.isEmpty());
         return !stock.isEmpty();
     }
 
@@ -73,5 +87,15 @@ public class Talon {
 
     public String stockString() {
         return stock.toString();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("STOCK: ").append(stockString());
+        stringBuilder.append("\nWASTE: ").append(wasteString());
+
+        return stringBuilder.toString();
     }
 }
