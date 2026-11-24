@@ -19,7 +19,7 @@ public class ConsoleView {
         System.out.println(ConsoleColor.RED + error + ConsoleColor.RESET);
     }
 
-    public static void printSuccessfulAction(String action) {
+    public static void printAction(String action) {
         System.out.println(ConsoleColor.YELLOW + action + ConsoleColor.RESET);
     }
 
@@ -39,5 +39,9 @@ public class ConsoleView {
 
         System.out.println(game);
         System.out.println(ConsoleColor.BLUE + "=========================================================" + ConsoleColor.RESET);
+    }
+
+    public static void printGoodbye() {
+        System.out.println("========== Thank you for playing Solitaire! ==========");
     }
 }
