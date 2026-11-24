@@ -15,8 +15,8 @@ public class Foundation extends DequePile {
     }
 
     public Foundation(Suit suit, Deque<Card> cardDeque) {
-        this.suit = suit;
         super(cardDeque);
+        this.suit = suit;
     }
 
     public Foundation copy() {

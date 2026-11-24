@@ -67,12 +67,18 @@ public class Talon {
     }
 
     /**
-     * Cards the player has already seen that sit under the waste top or are still in the stock,
-     * in draw order. Stock cards that were never flipped are not included.
+     * Tracks cards the player has already seen beneath the top waste card,
+     * preserving their original draw order.
+     *
+     * @return list of cards in the waste
      */
     public List<Card> knownCardsBelowTop() {
-        List<Card> known = new ArrayList<>(waste.peekTop(waste.size()));   // bottom to top
-        if (!known.isEmpty()) known.removeLast();              // drop the waste top itself
+        List<Card> known = waste.snapshot();
+
+        if (!known.isEmpty()) {
+            known.removeLast();              // drop the waste top itself
+        }
+
         for (Card card : stock.topFirst()) {                               // next card to draw first
             if (seen.contains(card)) {
                 known.add(card);

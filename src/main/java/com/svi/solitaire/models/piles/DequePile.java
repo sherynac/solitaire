@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
-import java.util.Collections;
 
 public class DequePile implements Pile {
 
@@ -45,7 +44,7 @@ public class DequePile implements Pile {
         return cards.removeLast();
     }
 
-    protected List<Card>   snapshot() {              // bottom to top
+    protected List<Card> snapshot() {              // bottom to top
         return new ArrayList<>(cards);
     }
 }

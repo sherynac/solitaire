@@ -61,7 +61,7 @@ public class MoveGenerator {
             if (destination.canAccept(card)) {
                 moves.add(new Move(
                         MoveType.TALON_TO_MANEUVER,
-                        null,
+                        card,
                         -1,
                         i,
                         1
@@ -77,7 +77,9 @@ public class MoveGenerator {
 
             ManeuverPile source = maneuver.getColumn(from);
 
-            if (source.isEmpty()) continue;
+            if (source.isEmpty()) {
+                continue;
+            }
 
             generateManeuverToFoundation(source, game, from, moves);
             generateManeuverToManeuver(source, from, moves, maneuver);
@@ -85,9 +87,16 @@ public class MoveGenerator {
     }
 
     private void generateManeuverToFoundation(ManeuverPile source, Game game, int from, List<Move> moves) {
-        Card top = source.peekTop();
-        if (game.getFoundation(top.suit()).canAccept(top)) {
-            moves.add(new Move(MoveType.MANEUVER_TO_FOUNDATION, top, from, top.suit().ordinal(), 1));
+        Card topCard = source.peekTop();
+        Foundation foundation = game.getFoundation(topCard.suit());
+        if (foundation.canAccept(topCard)) {
+            moves.add(new Move(
+                    MoveType.MANEUVER_TO_FOUNDATION,
+                    topCard,
+                    from,
+                    topCard.suit().ordinal(),
+                    1
+            ));
         }
     }
 
@@ -95,12 +104,22 @@ public class MoveGenerator {
         for (int count = 1; count <= source.visibleCount(); count++) {     // every face-up run
             Card runBase = source.cardFromTop(count - 1);
             for (int to = 0; to < Constants.MANEUVER_COLUMNS; to++) {
-                if (to == from) continue;
+                if (to == from) {
+                    continue;
+                }
 
                 ManeuverPile destination = maneuver.getColumn(to);
-                if (!destination.canAccept(runBase)) continue;
+                if (!destination.canAccept(runBase)) {
+                    continue;
+                }
 
-                moves.add(new Move(MoveType.MANEUVER_TO_MANEUVER, runBase, from, to, count));
+                moves.add(new Move(
+                        MoveType.MANEUVER_TO_MANEUVER,
+                        runBase,
+                        from,
+                        to,
+                        count
+                ));
             }
         }
     }
@@ -109,9 +128,21 @@ public class MoveGenerator {
         Talon talon = game.getTalon();
 
         if (talon.canDraw()) {
-            moves.add(new Move(MoveType.DRAW, null, Constants.NONE, Constants.NONE, 0));
+            moves.add(new Move(
+                    MoveType.DRAW,
+                    null,
+                    Constants.NONE,
+                    Constants.NONE,
+                    0
+            ));
         } else if (talon.canRestack()) {
-            moves.add(new Move(MoveType.RESTACK, null, Constants.NONE, Constants.NONE, 0));
+            moves.add(new Move(
+                    MoveType.RESTACK,
+                    null,
+                    Constants.NONE,
+                    Constants.NONE,
+                    0
+            ));
         }
     }
 }

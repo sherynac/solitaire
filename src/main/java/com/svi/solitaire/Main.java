@@ -10,7 +10,7 @@ import com.svi.solitaire.solver.MoveGenerator;
 import java.util.Random;
 
 public class Main {
-    static void main() {
+    public static void main(String[] args) {
         Random random = new Random();
 
         MoveGenerator moveGenerator = new MoveGenerator();

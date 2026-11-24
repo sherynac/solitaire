@@ -7,7 +7,14 @@ import com.svi.solitaire.models.Deck;
 import com.svi.solitaire.models.piles.Stock;
 import com.svi.solitaire.utils.Constants;
 
+/**
+ * Deals the deck into the maneuver and talon for the game
+ *
+ * @author Sheryn Cagulada
+ * @version 1.0
+ */
 public class CardDealer {
+
     public static Maneuver dealManeuver(Deck deck) {
         Maneuver maneuver = new Maneuver();
 

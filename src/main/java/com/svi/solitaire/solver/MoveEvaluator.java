@@ -10,25 +10,19 @@ import com.svi.solitaire.models.piles.ManeuverPile;
 import java.util.List;
 
 /**
- * Scores every legal move and picks the best one. Read-only: it never changes the game.
- * <p>
- * Priority order (highest first):
- * 1. Safe foundation move (A, 2, or a card no tableau card still needs)
- * 2. Any column move that flips a hidden card (deeper columns first)
- * 3. Any column move that empties a column
- * 4. Talon to column (a king only if something can follow it)
- * 5. Talon to foundation (unsafe)
- * 6. Column to foundation that helps nothing else
- * 7. Draw
- * 8. Restack
- * <p>
- * A score of 0 means "never play this move". Tier gaps are far larger than any bonus,
- * so a bonus can never lift a move into a higher tier.
+ * Scores every legal move and return the best one based on priority order
+ *
+ * @author Sheryn Cagulada
+ * @version 1.0
  */
 public class MoveEvaluator {
 
     /**
      * Returns the highest-scoring move, or null when nothing scores above 0.
+     *
+     * @param moves list of legal moves
+     * @param game current game state
+     * @return best move
      */
     public Move findBestMove(List<Move> moves, Game game) {
         Move best = null;
@@ -43,6 +37,13 @@ public class MoveEvaluator {
         return best;
     }
 
+    /**
+     * Score a move based on move type and current game state
+     *
+     * @param move to be evaluated move
+     * @param game current game state
+     * @return evaluation score of a move
+     */
     public int evaluate(Move move, Game game) {
         return switch (move.type()) {
             case TALON_TO_FOUNDATION, MANEUVER_TO_FOUNDATION -> 
@@ -57,6 +58,13 @@ public class MoveEvaluator {
         };
     }
 
+    /**
+     * Score moves that places a card to foundation
+     *
+     * @param move to be evaluated move
+     * @param game current game state
+     * @return evaluation score of a move
+     */
     private int evaluateToFoundation(Move move, Game game) {
         Card card = move.card();
         if (card == null) {
@@ -82,6 +90,13 @@ public class MoveEvaluator {
         return Constants.USELESS_FOUNDATION;
     }
 
+    /**
+     * Score moves from talon to maneuver
+     *
+     * @param move to be evaluated move
+     * @param game current game state
+     * @return evaluation score of a move
+     */
     private int evaluateTalonToManeuver(Move move, Game game) {
         boolean followUp = hasFollowUp(move, game);
 
@@ -93,12 +108,19 @@ public class MoveEvaluator {
         return Constants.TALON_TO_COLUMN + (followUp ? Constants.FOLLOW_UP_BONUS : 0);
     }
 
+    /**
+     * Score moves between maneuver piles
+     *
+     * @param move to be evaluated move
+     * @param game current game state
+     * @return evaluation score of a move
+     */
     private int evaluateManeuverToManeuver(Move move, Game game) {
         boolean reveals = revealsHiddenCard(move, game);
         boolean empties = emptiesColumn(move, game);
 
         if (!reveals && !empties) {
-            return 0;              // never shuffle cards for nothing
+            return 0;
         }
 
         int score = reveals ? Constants.REVEAL + hiddenCardsUnder(move, game) : Constants.EMPTY_COLUMN;
@@ -111,7 +133,11 @@ public class MoveEvaluator {
     }
 
     /**
-     * The card left exposed at the destination after the move: the TOP of the moved cards.
+     * Retrieves the top card of the sequence being moved.
+     *
+     * @param move to be evaluated move
+     * @param game current game state
+     * @return top card of the sequence being moved
      */
     private Card getMoveSequenceTopCard(Move move, Game game) {
         if (move.type().isFromTalon()) {
@@ -123,7 +149,11 @@ public class MoveEvaluator {
     }
 
     /**
-     * A and 2 are always safe. Otherwise both opposite-colour foundations must already be at rank - 1.
+     * Checks if card can still be used to build sequences in the maneuver
+     *
+     * @param card the card to be placed in the foundation
+     * @param game current game state
+     * @return true if no sequences can be built; false otherwise
      */
     private boolean isSafeForFoundation(Card card, Game game) {
         int rank = card.rank().getValue();
@@ -144,7 +174,11 @@ public class MoveEvaluator {
     }
 
     /**
-     * True if the move takes the whole visible run, so a hidden card flips.
+     * Checks if the move will flip a hidden card
+     *
+     * @param move to be evaluated move
+     * @param game current game state
+     * @return true if card will be revealed; false otherwise
      */
     private boolean revealsHiddenCard(Move move, Game game) {
         if (move.source() == Constants.NONE) {
@@ -157,6 +191,13 @@ public class MoveEvaluator {
                 && move.cardCount() == sourcePile.visibleCount(); // when visible card is moved, hidden is flipped
     }
 
+    /**
+     * Checks how much hidden cards are in a maneuver pile
+     *
+     * @param move to be evaluated move
+     * @param game current game state
+     * @return number of hidden cards in the pile
+     */
     private int hiddenCardsUnder(Move move, Game game) {
         if (move.source() == Constants.NONE) {
             return 0;
@@ -167,6 +208,13 @@ public class MoveEvaluator {
         return sourcePile.hiddenCount();
     }
 
+    /**
+     * Check if move will empty a column
+     *
+     * @param move to be evaluated move
+     * @param game current game state
+     * @return true if column is emptied; false otherwise
+     */
     private boolean emptiesColumn(Move move, Game game) {
         if (move.type().isFromTalon()) {
             return false;
@@ -178,6 +226,13 @@ public class MoveEvaluator {
                 && !isMoveToEmptyColumn(move, game);
     }
 
+    /**
+     * Checks if a move is towards an empty column
+     *
+     * @param move to be evaluated move
+     * @param game current game state
+     * @return true if move is to empty column; false otherwise
+     */
     private boolean isMoveToEmptyColumn(Move move, Game game) {
         ManeuverPile destinationPile = game.getManeuver().getColumn(move.destination());
 
@@ -185,8 +240,11 @@ public class MoveEvaluator {
     }
 
     /**
-     * True if, after the move, some column's whole visible run could be placed on the card
-     * the move leaves exposed (so a king placed in an empty column has something to follow it).
+     * Checks if the move would lead to more possible moves to reveal cards
+     *
+     * @param move to be evaluated move
+     * @param game current game state
+     * @return true if there is a follow-up move; false otherwise
      */
     private boolean hasFollowUp(Move move, Game game) {
         Card exposed = getMoveSequenceTopCard(move, game);
@@ -218,7 +276,9 @@ public class MoveEvaluator {
         }
 
         for (Card known : game.getTalon().knownCardsBelowTop()) {
-            if (known.isOneLowerThan(exposed)) return true;
+            if (known.isOneLowerThan(exposed)) {
+                return true;
+            }
         }
 
         return false;

@@ -15,8 +15,8 @@ public class Waste extends DequePile {
     }
 
     public Waste(int visibleCount, Deque<Card> cardDeque) {
-        this.visibleCount = visibleCount;
         super(cardDeque);
+        this.visibleCount = visibleCount;
     }
 
     public Waste copy() {
@@ -24,17 +24,18 @@ public class Waste extends DequePile {
         return new Waste(visibleCount, cardDeque);
     }
 
-    public List<Card> peekTop(int n) {
+    public List<Card> getTopCards(int n) {
         if (n < 0) {
             throw new IllegalArgumentException("n must not be negative");
         }
+
         List<Card> all = snapshot();
         return List.copyOf(all.subList(Math.max(0, all.size() - n), all.size()));
     }
 
     @Override
     public String toString() {
-        return peekTop(visibleCount).stream()
+        return getTopCards(visibleCount).stream()
                 .map(Object::toString)
                 .collect(Collectors.joining(", ", "[", "] x" + size()));
     }
