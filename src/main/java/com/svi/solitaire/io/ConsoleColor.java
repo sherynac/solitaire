@@ -1,10 +1,10 @@
 package com.svi.solitaire.io;
 
 /**
- * Utility for adding color to console display
+ * Constants for adding color to console display
  *
- * @author Sheryn Ann Cagulada
- * @version October 30, 2026
+ * @author Sheryn Cagulada
+ * @version 1.0
  */
 public final class ConsoleColor {
     public static final String RED = "\u001B[31m";

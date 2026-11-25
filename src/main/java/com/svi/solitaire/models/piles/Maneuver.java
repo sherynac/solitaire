@@ -7,19 +7,34 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Represents the maneuver area of a Solitaire game, consisting of seven columns
+ * where cards are arranged and moved according to the game rules.
+ *
+ * @author Sheryn Cagulada
+ * @version 1.0
+ */
 public class Maneuver {
 
     private final List<ManeuverPile> columnList;
 
-    public Maneuver(){
+    /**
+     * Creates a maneuver area containing seven empty columns.
+     */
+    public Maneuver() {
         columnList = new ArrayList<>();
 
-        for (int i = 0 ; i < 7; i++){
+        for (int i = 0; i < 7; i++) {
             ManeuverPile tableauColumn = new ManeuverPile();
             columnList.add(tableauColumn);
         }
     }
 
+    /**
+     * Creates a maneuver area using copies of the provided columns.
+     *
+     * @param columnList the columns used to initialize the maneuver area
+     */
     public Maneuver(List<ManeuverPile> columnList) {
         this.columnList = new ArrayList<>();
 
@@ -28,22 +43,57 @@ public class Maneuver {
         }
     }
 
+    /**
+     * Creates an independent copy of the maneuver area.
+     *
+     * @return a new maneuver containing copies of the current columns
+     */
     public Maneuver copy() {
         return new Maneuver(columnList);
     }
 
+    /**
+     * Returns the column at the specified index.
+     *
+     * @param index the zero-based index of the column
+     * @return the column at the specified index
+     * @throws IndexOutOfBoundsException if the index is out of range
+     */
     public ManeuverPile getColumn(int index) {
         return columnList.get(index);
     }
 
+    /**
+     * Adds a card face down to the specified column.
+     *
+     * @param columnIndex the zero-based index of the destination column
+     * @param card the card to add
+     */
     public void addCard(int columnIndex, Card card) {
         columnList.get(columnIndex).addHidden(card);
     }
 
+    /**
+     * Adds a card face up to the specified column.
+     *
+     * @param columnIndex the zero-based index of the destination column
+     * @param card the card to add
+     */
     public void addVisibleCard(int columnIndex, Card card) {
         columnList.get(columnIndex).add(card);
     }
 
+    /**
+     * Moves the specified number of cards from one column to another.
+     * <p>
+     * The relative order of the moved cards is preserved. If the source column
+     * has no remaining visible cards but still contains hidden cards, its
+     * top card is revealed.
+     *
+     * @param source the zero-based index of the source column
+     * @param destination the zero-based index of the destination column
+     * @param cardCount the number of cards to move
+     */
     public void moveCards(int source, int destination, int cardCount) {
         ManeuverPile sourcePile = getColumn(source);
         ManeuverPile destPile = getColumn(destination);
@@ -51,10 +101,10 @@ public class Maneuver {
         List<Card> cardsToMove = new ArrayList<>();
 
         for (int counter = 0; counter < cardCount; counter++) {
-            cardsToMove.add(sourcePile.removeTop());   // top first
+            cardsToMove.add(sourcePile.removeTop());
         }
 
-        Collections.reverse(cardsToMove);            // now bottom to top: C-9, D-8, S-7
+        Collections.reverse(cardsToMove);
 
         destPile.add(cardsToMove);
 
@@ -63,6 +113,14 @@ public class Maneuver {
         }
     }
 
+    /**
+     * Returns a formatted representation of the maneuver area.
+     * <p>
+     * Each column is displayed under its corresponding index, with cards
+     * arranged vertically from bottom to top.
+     *
+     * @return the formatted representation of the maneuver area
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -94,4 +152,3 @@ public class Maneuver {
         return sb.toString();
     }
 }
-

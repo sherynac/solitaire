@@ -15,6 +15,12 @@ import com.svi.solitaire.utils.Constants;
  */
 public class CardDealer {
 
+    /**
+     * Deal Maneuver piles in increasing length
+     *
+     * @param deck to be distributed cards
+     * @return maneuver with distributed cards
+     */
     public static Maneuver dealManeuver(Deck deck) {
         Maneuver maneuver = new Maneuver();
 
@@ -33,6 +39,13 @@ public class CardDealer {
         return maneuver;
     }
 
+    /**
+     * Deal remaining cards to the talon
+     *
+     * @param deck to be distributed cards
+     * @param drawCount number of draws
+     * @return talon with distributed cards
+     */
     public static Talon dealTalon(Deck deck, int drawCount) {
         Stock stock = new Stock();
 

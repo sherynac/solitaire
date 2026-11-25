@@ -5,9 +5,27 @@ import com.svi.solitaire.utils.Constants;
 
 import java.util.Scanner;
 
+/**
+ * Retrieves and validates input from the user
+ *
+ * @author Sheryn Cagulada
+ * @version 1.0
+ */
 public class InputHandler {
     private static final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Closes the scanner instance
+     */
+    public static void close() {
+        scanner.close();
+    }
+
+    /**
+     * Retrieves filename from the user
+     *
+     * @return the entered filename
+     */
     public static String inputFileName() {
         String filename;
         String filePrompt = "\nEnter filename for card deck: ";
@@ -23,6 +41,11 @@ public class InputHandler {
         }
     }
 
+    /**
+     * Retrieves the number of draws from the suer
+     *
+     * @return the entered draw count
+     */
     public static int inputDrawCount() {
         int drawCount;
 
@@ -48,6 +71,11 @@ public class InputHandler {
         }
     }
 
+    /**
+     * Retrieves the shuffle choice from the user
+     *
+     * @return the chosen shuffle type
+     */
     public static ShuffleType inputShuffleChoice() {
         int shuffleChoice;
         final int IN_FARO_SHUFFLE_CHOICE = 1;
@@ -75,6 +103,11 @@ public class InputHandler {
         };
     }
 
+    /**
+     * Retrieves the simulation choice from the user
+     *
+     * @return the simulation choice
+     */
     public static int inputSimulationChoice() {
         int simChoice;
         String simPrompt = """
@@ -88,6 +121,11 @@ public class InputHandler {
         return simChoice;
     }
 
+    /**
+     * Retrieves the number of game from the user
+     *
+     * @return the number of games
+     */
     public static int inputGameCount() {
         int gameCount;
         String gamePrompt = "Enter number of games to simulate (1-1000): ";
@@ -97,6 +135,11 @@ public class InputHandler {
         return gameCount;
     }
 
+    /**
+     * Prompts and checks if the user wants to play again
+     *
+     * @return true if play again; false otherwise
+     */
     public static boolean playAgain() {
         while (true) {
             ConsoleView.printPrompt("\nDo you want to play again? (y/n): ");
@@ -111,6 +154,14 @@ public class InputHandler {
         }
     }
 
+    /**
+     * Prompts and checks integer if it is within the range
+     *
+     * @param prompt the prompt message
+     * @param min minimum range
+     * @param max maximum range
+     * @return the entered integer
+     */
     public static int inputInt(String prompt, int min, int max) {
         while (true) {
             try {

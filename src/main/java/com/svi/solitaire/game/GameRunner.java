@@ -14,6 +14,13 @@ import com.svi.solitaire.utils.Constants;
 
 import java.util.List;
 
+/**
+ * Executes a single Solitaire game by preparing the deck, creating the game, and repeatedly selecting moves
+ * until the game ends
+ *
+ * @author Sheryn Cagulada
+ * @version 1.0
+ */
 public class GameRunner {
     private final MoveGenerator moveGenerator;
     private final MoveEvaluator moveEvaluator;
@@ -25,6 +32,17 @@ public class GameRunner {
         this.moveExecutor = moveExecutor;
     }
 
+    /**
+     * Executes a single Solitaire game using the specified deck configuration
+     * and shuffle settings.
+     *
+     * @param deck the deck of cards to use for the game
+     * @param drawCount the number of cards drawn from the talon at a time
+     * @param shuffleChoice the selected shuffle type
+     * @param shuffleCount the number of times to shuffle the deck
+     * @param toDisplay whether to display the deck and game states during execution
+     * @return true if the game is won; false otherwise
+     */
     public boolean playSingleGame(Deck deck, int drawCount, ShuffleType shuffleChoice,
                                   int shuffleCount, boolean toDisplay) {
 
@@ -40,6 +58,14 @@ public class GameRunner {
         return game.isGameOver();
     }
 
+    /**
+     * Resets content of the deck and shuffles deck based on chosen shuffle type
+     *
+     * @param deck standard deck
+     * @param shuffleChoice the selected shuffle type
+     * @param shuffleCount the number of time to shuffle the deck
+     * @param toDisplay whether to display the deck and game states during execution
+     */
     private void prepareDeck(Deck deck, ShuffleType shuffleChoice, int shuffleCount, boolean toDisplay) {
         deck.reset();
 
@@ -58,6 +84,13 @@ public class GameRunner {
         }
     }
 
+    /**
+     * Generate, evaluate and execute the best move repeatedly
+     * until the game ends or stopping condition is reached
+     *
+     * @param game current game state
+     * @param toDisplay whether to display the deck and game states during execution
+     */
     private void playMoves(Game game, boolean toDisplay) {
         int moveCount = 0;
         int talonMovesSinceProgress = 0;

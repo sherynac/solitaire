@@ -5,8 +5,21 @@ import com.svi.solitaire.utils.Constants;
 
 import java.util.*;
 
+/**
+ * Contains the in faro shuffle logic
+ *
+ * @author Sheryn Cagulada
+ * @version 1.0
+ */
 public class InFaroShuffle implements ShuffleStrategy {
 
+    /**
+     * Performs in faro shuffle to game deck
+     *
+     * @param shuffleCount number of shuffles
+     * @param gameDeck the deck to be shuffled
+     * @return shuffled deque of cards
+     */
     @Override
     public Deque<Card> shuffle(int shuffleCount, Deque<Card> gameDeck) {
         List<Card> cardList = new ArrayList<>(gameDeck);

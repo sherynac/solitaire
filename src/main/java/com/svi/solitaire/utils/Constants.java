@@ -1,5 +1,8 @@
 package com.svi.solitaire.utils;
 
+/**
+ * Contains the constant values used in the Solitaire game
+ */
 public final class Constants {
 
     // Deck Constants

@@ -11,46 +11,73 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Manages the overall game flow
+ *
+ * @author Sheryn Cagulada
+ * @version 1.0
+ */
 public class GameManager {
     private final Random random;
     private final GameRunner gameRunner;
     private final SimulationRunner simulationRunner;
 
+    /**
+     * Constructor for the GameManager
+     *
+     * @param gameRunner runs a single game
+     * @param simulationRunner runs several games to calculate win rate
+     * @param random random number generator
+     */
     public GameManager(GameRunner gameRunner, SimulationRunner simulationRunner, Random random) {
         this.random = random;
         this.gameRunner = gameRunner;
         this.simulationRunner = simulationRunner;
     }
 
+    /**
+     * Runs the main application loop, allowing the user to play individual games
+     * or run game simulations until they choose to exit.
+     */
     public void run() {
-        boolean willPlayAgain = true;
 
-        ConsoleView.printWelcome();
+        try {
+            boolean willPlayAgain = true;
 
-        Deck deck = loadDeckWithRetry();
-        ConsoleView.printAction("Game has successfully read list of cards.");
+            ConsoleView.printWelcome();
 
-        while (willPlayAgain) {
-            int drawCount = InputHandler.inputDrawCount();
-            ConsoleView.printAction("Game is set to draw " + drawCount + " from talon.");
+            Deck deck = loadDeckWithRetry();
+            ConsoleView.printAction("Game has successfully read list of cards.");
 
-            ShuffleType shuffleChoice = InputHandler.inputShuffleChoice();
-            ConsoleView.printAction("Game is set to " + shuffleChoice.getLabel() + ".");
+            while (willPlayAgain) {
+                int drawCount = InputHandler.inputDrawCount();
+                ConsoleView.printAction("Game is set to draw " + drawCount + " from talon.");
 
-            int simulationChoice = InputHandler.inputSimulationChoice();
+                ShuffleType shuffleChoice = InputHandler.inputShuffleChoice();
+                ConsoleView.printAction("Game is set to " + shuffleChoice.getLabel() + ".");
 
-            if (simulationChoice == 1) {
-                playSingleGame(shuffleChoice, deck, drawCount);
-            } else {
-                simulateGame(shuffleChoice, deck, drawCount);
+                int simulationChoice = InputHandler.inputSimulationChoice();
+
+                if (simulationChoice == 1) {
+                    playSingleGame(shuffleChoice, deck, drawCount);
+                } else {
+                    simulateGame(shuffleChoice, deck, drawCount);
+                }
+
+                willPlayAgain = InputHandler.playAgain();
             }
 
-            willPlayAgain = InputHandler.playAgain();
+            ConsoleView.printGoodbye();
+        } finally {
+            InputHandler.close();
         }
-
-        ConsoleView.printGoodbye();
     }
 
+    /**
+     * Loads the deck from the entered filename and catches any errors
+     *
+     * @return the successfully loaded deck
+     */
     private Deck loadDeckWithRetry() {
         while (true) {
             String filename = InputHandler.inputFileName();
@@ -68,21 +95,37 @@ public class GameManager {
     }
 
     /**
-     * Shuffle count for a single, watched game: none for "no shuffle", otherwise 1 to 100.
+     * Get the number of shuffles based on shuffle type selected
+     *
+     * @param shuffleChoice selected shuffle type
+     * @return number of shuffles
      */
     private int pickShuffleCount(ShuffleType shuffleChoice) {
         return shuffleChoice == ShuffleType.NO_SHUFFLE ? 0 : random.nextInt(Constants.MAX_RANDOM_SHUFFLES) + 1;
     }
 
+    /**
+     * Plays a single game
+     *
+     * @param shuffleChoice selected shuffle type
+     * @param deck to be distributed deck
+     * @param drawCount number of draws
+     */
     private void playSingleGame(ShuffleType shuffleChoice, Deck deck, int drawCount) {
         int shuffleCount = pickShuffleCount(shuffleChoice);
         boolean won = gameRunner.playSingleGame(deck, drawCount, shuffleChoice, shuffleCount, true);
         ConsoleView.printAction(won ? "\n!! Congratulations, Game was solved !!" : "\n!! No more moves. Game not solved. !!");
     }
 
+    /**
+     * Simulates several games by building shuffle count, testing wins and computing winrate
+     *
+     * @param shuffleChoice selected shuffle type
+     * @param deck to be distributed deck
+     * @param drawCount number of draws
+     */
     private void simulateGame(ShuffleType shuffleChoice, Deck deck, int drawCount) {
-        int randomGames = shuffleChoice == ShuffleType.RANDOM
-                ? InputHandler.inputGameCount() : 0;
+        int randomGames = shuffleChoice == ShuffleType.RANDOM ? InputHandler.inputGameCount() : 0;
 
         List<Integer> shuffleCounts = simulationRunner.buildShuffleCounts(shuffleChoice, randomGames);
         int gamesPlayed = shuffleCounts.size();
