@@ -214,7 +214,7 @@ public class ManeuverPile implements Pile {
      * according to the maneuver column rules.
      *
      * @param card the card to check
-     * @return {@code true} if the card can be placed; {@code false} otherwise
+     * @return true if the card can be placed; false otherwise
      */
     public boolean canAccept(Card card) {
         if (card == null) {

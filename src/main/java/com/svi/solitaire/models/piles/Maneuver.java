@@ -85,10 +85,6 @@ public class Maneuver {
 
     /**
      * Moves the specified number of cards from one column to another.
-     * <p>
-     * The relative order of the moved cards is preserved. If the source column
-     * has no remaining visible cards but still contains hidden cards, its
-     * top card is revealed.
      *
      * @param source the zero-based index of the source column
      * @param destination the zero-based index of the destination column
@@ -115,9 +111,6 @@ public class Maneuver {
 
     /**
      * Returns a formatted representation of the maneuver area.
-     * <p>
-     * Each column is displayed under its corresponding index, with cards
-     * arranged vertically from bottom to top.
      *
      * @return the formatted representation of the maneuver area
      */

@@ -22,7 +22,7 @@ public class Talon {
      * Creates a talon with the specified draw count and stock.
      *
      * @param drawCount the maximum number of cards drawn per turn
-     * @param stock the stock pile
+     * @param stock the stockpile
      */
     public Talon(int drawCount, Stock stock) {
         this.drawCount = drawCount;
@@ -36,7 +36,7 @@ public class Talon {
      * previously seen cards.
      *
      * @param drawCount the maximum number of cards drawn per turn
-     * @param stock the stock pile
+     * @param stock the stockpile
      * @param waste the waste pile
      * @param seen the cards that have previously been seen
      */
@@ -119,7 +119,7 @@ public class Talon {
     }
 
     /**
-     * Moves all cards from the waste pile back into the stock pile.
+     * Moves all cards from the waste pile back into the stockpile.
      */
     public void restack() {
         while (!waste.isEmpty()) {
@@ -176,11 +176,8 @@ public class Talon {
      */
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append("STOCK: ").append(stockString());
-        stringBuilder.append("\nWASTE: ").append(wasteString());
-
-        return stringBuilder.toString();
+        return "STOCK: " + stockString() +
+                "\nWASTE: " + wasteString();
     }
 }
