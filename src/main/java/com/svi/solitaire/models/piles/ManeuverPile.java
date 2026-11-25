@@ -195,6 +195,8 @@ public class ManeuverPile implements Pile {
         }
 
         if (index < hiddenCards.size()) {
+//            List<Card> checker = new ArrayList<>(hiddenCards);
+//            return checker.get(index).toString() ;
             return " ?";
         }
 

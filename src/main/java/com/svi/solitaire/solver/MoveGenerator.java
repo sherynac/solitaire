@@ -36,7 +36,7 @@ public class MoveGenerator {
     /**
      * Generates all available moves from the talon's waste pile.
      *
-     * @param game the current game state
+     * @param game  the current game state
      * @param moves the list to which generated moves are added
      */
     private void addTalonMoves(Game game, List<Move> moves) {
@@ -48,7 +48,7 @@ public class MoveGenerator {
      * Generates a move from the top of the waste pile to its corresponding
      * foundation if the card can be placed there.
      *
-     * @param game the current game state
+     * @param game  the current game state
      * @param moves the list to which the generated move is added
      */
     private void generateTalonToFoundation(Game game, List<Move> moves) {
@@ -75,7 +75,7 @@ public class MoveGenerator {
      * Generates moves from the top of the waste pile to maneuver columns
      * that can accept the card.
      *
-     * @param game the current game state
+     * @param game  the current game state
      * @param moves the list to which generated moves are added
      */
     private void generateTalonToManeuver(Game game, List<Move> moves) {
@@ -105,7 +105,7 @@ public class MoveGenerator {
     /**
      * Generates all available moves originating from maneuver columns.
      *
-     * @param game the current game state
+     * @param game  the current game state
      * @param moves the list to which generated moves are added
      */
     private void addManeuverMoves(Game game, List<Move> moves) {
@@ -129,9 +129,9 @@ public class MoveGenerator {
      * to its corresponding foundation if the card can be placed there.
      *
      * @param source the source maneuver column
-     * @param game the current game state
-     * @param from the zero-based index of the source column
-     * @param moves the list to which the generated move is added
+     * @param game   the current game state
+     * @param from   the zero-based index of the source column
+     * @param moves  the list to which the generated move is added
      */
     private void generateManeuverToFoundation(
             ManeuverPile source,
@@ -156,9 +156,9 @@ public class MoveGenerator {
     /**
      * Generates moves of visible card sequences between maneuver columns.
      *
-     * @param source the source maneuver column
-     * @param from the zero-based index of the source column
-     * @param moves the list to which generated moves are added
+     * @param source   the source maneuver column
+     * @param from     the zero-based index of the source column
+     * @param moves    the list to which generated moves are added
      * @param maneuver the maneuver area containing the destination columns
      */
     private void generateManeuverToManeuver(
@@ -195,7 +195,7 @@ public class MoveGenerator {
     /**
      * Generates the next available talon cycling action.
      *
-     * @param game the current game state
+     * @param game  the current game state
      * @param moves the list to which the generated move is added
      */
     private void addTalonCycleMove(Game game, List<Move> moves) {

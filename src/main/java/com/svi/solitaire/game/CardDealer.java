@@ -24,14 +24,14 @@ public class CardDealer {
     public static Maneuver dealManeuver(Deck deck) {
         Maneuver maneuver = new Maneuver();
 
-        for (int col = 0; col < Constants.MANEUVER_COLUMNS; col++) {
-            for (int row = col; row < Constants.MANEUVER_ROWS; row++) {
+        for (int row = 0; row < Constants.MANEUVER_COLUMNS; row++) {
+            for (int col = row; col < Constants.MANEUVER_ROWS; col++) {
                 Card card = deck.removeFirst();
 
-                if (col == row) {
-                    maneuver.addVisibleCard(row, card);
+                if (row == col) {
+                    maneuver.addVisibleCard(col, card);
                 } else {
-                    maneuver.addCard(row, card);
+                    maneuver.addCard(col, card);
                 }
             }
         }
